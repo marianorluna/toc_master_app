@@ -31,6 +31,7 @@ export class ProjectsManager {
             if (!projectsPage || !detailsPage) {return}
             projectsPage.style.display = "none"
             detailsPage.style.display = "flex"
+            this.setDetailsPage(project)
         })
         // Agregar evento para mostrar página de proyectos
         const projectsButton = document.getElementById("projects-btn")
@@ -46,6 +47,36 @@ export class ProjectsManager {
         this.ui.append(project.ui);
         this.list.push(project);
         return project;
+    }
+
+    private setDetailsPage(project: Project) {
+        const detailsPage = document.getElementById("project-details") as HTMLDivElement
+        if (!detailsPage) { return console.warn("Page not found") }
+        const name = detailsPage.querySelector("[data-project-info='name']")
+        if (name) { name.textContent = project.name }
+        const description = detailsPage.querySelector("[data-project-info='description']")
+        if (description) { description.textContent = project.description }
+        const cardName = detailsPage.querySelector("[data-project-info='cardName']")
+        if (cardName) { cardName.textContent = project.name }
+        const cardDescription = detailsPage.querySelector("[data-project-info='cardDescription']")
+        if (cardDescription) { cardDescription.textContent = project.description }
+        const status = detailsPage.querySelector("[data-project-info='status']")
+        if (status) { status.textContent = project.status }
+        const userRole = detailsPage.querySelector("[data-project-info='userRole']")
+        if (userRole) { userRole.textContent = project.userRole }
+        const finishDate = detailsPage.querySelector("[data-project-info='finishDate']")
+        if (finishDate) { 
+            let dateString = project.finishDate
+            let dateObj = new Date(dateString)
+            finishDate.textContent = dateObj.toDateString() 
+        }
+        const cost = detailsPage.querySelector("[data-project-info='cost']")
+        if (cost) { cost.textContent = `$${project.cost}` }
+        const progress = detailsPage.querySelector("[data-project-info='progress']") as HTMLDivElement
+        if (progress) { 
+            progress.textContent = `${project.progress * 100}%`
+            progress.style.width = `${project.progress * 100}%`;
+        }
     }
 
     getProject(id: string) {

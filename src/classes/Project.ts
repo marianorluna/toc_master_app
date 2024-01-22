@@ -22,8 +22,8 @@ export class Project implements IProject {
 
     // Class internals
     ui: HTMLDivElement
-    cost: number = 10
-    progress: number = 0
+    cost: number = 100000
+    progress: number = 0.6
     id: string
 
     constructor(data: IProject){
