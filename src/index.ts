@@ -37,6 +37,7 @@ function toggleModal(id: string) {
 const projectsListUI = document.getElementById("projects-list") as HTMLElement;
 const projectsManager = new ProjectsManager(projectsListUI);
 
+
 const newProjectBtn = document.getElementById("new-project-btn");
 if (newProjectBtn) {
     // Esta función tiene dos argumentos
