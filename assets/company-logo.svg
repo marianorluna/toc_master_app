@@ -1,67 +1,47 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-
-<svg
-   width="106mm"
-   height="35mm"
-   viewBox="0 0 106 35"
-   version="1.1"
-   id="svg5"
-   inkscape:version="1.1 (c68e22c387, 2021-05-23)"
-   sodipodi:docname="logo.svg"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview7"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:pageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:document-units="mm"
-     showgrid="false"
-     inkscape:zoom="2.1215981"
-     inkscape:cx="186.88742"
-     inkscape:cy="69.051721"
-     inkscape:window-width="2560"
-     inkscape:window-height="1027"
-     inkscape:window-x="-8"
-     inkscape:window-y="-8"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="layer1"
-     showborder="true"
-     inkscape:showpageshadow="false"
-     units="mm" />
-  <defs
-     id="defs2" />
-  <g
-     inkscape:label="Layer 1"
-     inkscape:groupmode="layer"
-     id="layer1">
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:13.2642px;line-height:1.25;font-family:'Century Gothic';-inkscape-font-specification:'Century Gothic, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ececec;stroke-width:0.257519"
-       x="2.2813756"
-       y="12.237638"
-       id="text1772"><tspan
-         sodipodi:role="line"
-         id="tspan1770"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:13.2642px;font-family:'Century Gothic';-inkscape-font-specification:'Century Gothic, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#ececec;stroke-width:0.257519"
-         x="2.2813756"
-         y="12.237638">CONSTRUCTION</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:19.6px;line-height:1.25;font-family:'Century Gothic';-inkscape-font-specification:'Century Gothic, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#029ae0;fill-opacity:1;stroke-width:0.380525"
-       x="2.0908241"
-       y="32.229736"
-       id="text1776"><tspan
-         sodipodi:role="line"
-         id="tspan1774"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:19.6px;font-family:'Century Gothic';-inkscape-font-specification:'Century Gothic, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#029ae0;fill-opacity:1;stroke-width:0.380525"
-         x="2.0908241"
-         y="32.229736">COMPANY</tspan></text>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- Creator: CorelDRAW X8 -->
+<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" width="238.442mm" height="86.0644mm" version="1.1" style="shape-rendering:geometricPrecision; text-rendering:geometricPrecision; image-rendering:optimizeQuality; fill-rule:evenodd; clip-rule:evenodd"
+viewBox="0 0 23730 8565"
+ xmlns:xlink="http://www.w3.org/1999/xlink">
+ <defs>
+  <style type="text/css">
+   <![CDATA[
+    .fil0 {fill:none}
+    .fil2 {fill:black}
+    .fil3 {fill:white}
+    .fil1 {fill:white;fill-rule:nonzero}
+   ]]>
+  </style>
+ </defs>
+ <g id="arqfi_logotipo">
+  <metadata id="CorelCorpID_0Corel-Layer"/>
+  <g id="logotipo">
+   <polygon id="border_x0020_" class="fil0" points="0,0 23730,0 23730,8565 0,8565 "/>
+   <g id="arqfi_ar">
+    <g>
+     <path id="letter_r" class="fil1" d="M9208 3636c0,512 -337,822 -1005,822l-889 0 0 -1645 889 0c668,0 1005,303 1005,823zm1193 3006l-1058 -1517c613,-263 970,-782 970,-1489 0,-1059 -788,-1713 -2049,-1713l-2042 0 0 4719 1092 0 0 -1315 950 0 54 0 910 1315 1173 0z"/>
+     <path id="1" class="fil2" d="M9258 3636c0,275 -94,496 -279,648 -176,145 -435,224 -776,224l-889 0 -50 0 0 -50 0 -1645 0 -50 50 0 889 0c342,0 601,78 778,223 184,151 277,371 277,650zm-50 0c0,512 -337,822 -1005,822l-889 0 0 -1645 889 0c668,0 1005,303 1005,823zm1193 3006l-1058 -1517c613,-263 970,-782 970,-1489 0,-1059 -788,-1713 -2049,-1713l-2042 0 0 4719 1092 0 0 -1315 950 0 54 0 910 1315 1173 0zm-95 -50l-1004 -1438 -35 -50 56 -24c301,-129 538,-321 699,-568 157,-241 241,-536 241,-876 0,-514 -190,-928 -532,-1214 -346,-289 -848,-449 -1467,-449l-1993 0 0 4619 993 0 0 -1265 0 -49 50 0 950 0 54 0 26 0 15 21 895 1293 1052 0z"/>
+    </g>
+    <g>
+     <path id="letter_a" class="fil1" d="M2352 4802l749 -1807 748 1807 -1497 0zm2259 1840l1146 0 -2110 -4719 -1079 0 -2103 4719 1119 0 418 -1011 2191 0 418 1011z"/>
+     <path id="1" class="fil2" d="M2307 4783l748 -1807 46 -110 46 110 748 1807 28 68 -74 0 -1497 0 -74 0 29 -68zm45 19l749 -1807 748 1807 -1497 0zm2259 1840l1146 0 -2110 -4719 -1079 0 -2103 4719 1119 0 418 -1011 2191 0 418 1011zm33 -50l1036 0 -2065 -4619 -1015 0 -2059 4619 1010 0 405 -980 13 -31 33 0 2191 0 33 0 13 31 405 980z"/>
+    </g>
+   </g>
+   <g id="arqfi_fi">
+    <g>
+     <polygon id="letter_f" class="fil1" points="19615,2800 19615,1923 16049,1923 16049,6642 17141,6642 17141,4923 19325,4923 19325,4047 17141,4047 17141,2800 "/>
+     <path id="1" class="fil2" d="M19566 2750l0 -777 -3467 0 0 4619 993 0 0 -1669 0 -50 49 0 2135 0 0 -777 -2135 0 -49 0 0 -49 0 -1247 0 -50 49 0 2425 0zm49 50l0 -877 -3566 0 0 4719 1092 0 0 -1719 2184 0 0 -876 -2184 0 0 -1247 2474 0z"/>
+    </g>
+    <g>
+     <polygon id="letter_i" class="fil1" points="20080,5766 20080,6642 21127,6642 22219,6642 23265,6642 23265,5766 22219,5766 22219,2800 23265,2800 23265,1923 22219,1923 21127,1923 20080,1923 20080,2800 21127,2800 21127,5766 "/>
+     <path id="1" class="fil2" d="M20130 5815l0 777 997 0 1092 0 996 0 0 -777 -996 0 -50 0 0 -49 0 -2966 0 -50 50 0 996 0 0 -777 -996 0 -1092 0 -997 0 0 777 997 0 49 0 0 50 0 2966 0 49 -49 0 -997 0zm-50 -49l0 876 1047 0 1092 0 1046 0 0 -876 -1046 0 0 -2966 1046 0 0 -877 -1046 0 -1092 0 -1047 0 0 877 1047 0 0 2966 -1047 0z"/>
+    </g>
+   </g>
+   <g>
+    <path class="fil3" d="M12668 465l1114 0 0 1525c1035,250 1802,1182 1802,2293 0,1111 -767,2042 -1802,2293l0 1524 -1114 0 0 -1524c-1034,-251 -1802,-1182 -1802,-2293 0,-1111 768,-2043 1802,-2293l0 -1525zm1114 2705l0 2226c408,-205 688,-626 688,-1113 0,-487 -280,-909 -688,-1113zm-1114 2226l0 -2226c-408,204 -687,626 -687,1113 0,487 279,908 687,1113z"/>
+    <path id="1" class="fil2" d="M12668 465l1114 0 0 1525c1035,250 1802,1182 1802,2293 0,1111 -767,2042 -1802,2293l0 1524 -1114 0 0 -1524c-1034,-251 -1802,-1182 -1802,-2293 0,-1111 768,-2043 1802,-2293l0 -1525zm1114 2705l0 2226c408,-205 688,-626 688,-1113 0,-487 -280,-909 -688,-1113zm-1114 2226l0 -2226c-408,204 -687,626 -687,1113 0,487 279,908 687,1113zm1065 -4881l-1015 0 0 1475 0 39 -38 9c-512,124 -957,418 -1272,819 -308,392 -492,888 -492,1426 0,538 184,1033 492,1425 315,401 760,696 1272,819l38 10 0 39 0 1474 1015 0 0 -1474 0 -39 38 -10c511,-123 956,-418 1271,-819 309,-392 493,-887 493,-1425 0,-538 -184,-1034 -493,-1426 -315,-401 -760,-695 -1271,-819l-38 -9 0 -39 0 -1475zm0 4881l0 -2226 0 -81 72 36c215,108 396,275 522,479 122,197 193,430 193,679 0,248 -71,481 -193,679 -126,204 -307,370 -522,478l-72 36 0 -80zm-1015 -2226l0 2226 0 80 -72 -36c-216,-108 -397,-274 -523,-478 -122,-198 -192,-431 -192,-679 0,-249 70,-482 192,-679 126,-204 307,-371 523,-479l72 -36 0 81z"/>
+   </g>
   </g>
+ </g>
 </svg>

@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from 'uuid'
+import { ProjectsManager as PM } from './ProjectsManager'
 
 export type ProjectStatus = "Pending" | "Active" | "Finished"
 export type UserRole = "Architect" | "Engineer" | "Developer"
@@ -43,12 +44,13 @@ export class Project implements IProject {
 
     // creates the project card UI
     setUI() {
+        const color = PM.iconExportColor
         if (this.ui && this.ui instanceof HTMLElement) {return}
         this.ui = document.createElement("div")
         this.ui.className = "project-card"
         this.ui.innerHTML = `
         <div class="card-header">
-            <p style="background-color: #ca8134; padding: 10px; border-radius: 8px; aspect-ratio: 1;">HC</p>
+            <p style="background-color: ${(Object.keys(color)).includes(this.id) ? color[this.id] : "#CC8C52"}; padding: 10px; border-radius: 8px; aspect-ratio: 1;">${this.name == "" ? "ID" : this.name.toUpperCase().substring(0,2)}</p>
             <div>
                 <h5>${this.name}</h5>
                 <p>${this.description}</p>
@@ -73,5 +75,6 @@ export class Project implements IProject {
             </div>
         </div>
         `
+        console.log(Object.keys(PM.iconExportColor))
     }
 }

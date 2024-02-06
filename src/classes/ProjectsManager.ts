@@ -3,11 +3,13 @@ import { IProject, Project } from "./Project";
 export class ProjectsManager {
     list: Project[] = [];
     ui: HTMLElement;
+    listIdColor: Object = {};
+    static iconExportColor: Object = {}
 
     constructor(container: HTMLElement) {
         this.ui = container;
         this.newProject({
-            name: "Default Project",
+            name: "BIM Proyect",
             description: "This is just a default app project",
             status: "Pending",
             userRole: "Architect",
@@ -46,6 +48,10 @@ export class ProjectsManager {
         }
         this.ui.append(project.ui);
         this.list.push(project);
+        
+        // Color project icon
+        this.colorIcon(project.id)
+        
         return project;
     }
 
@@ -54,6 +60,26 @@ export class ProjectsManager {
         if (!detailsPage) { return console.warn("Page not found") }
         const name = detailsPage.querySelector("[data-project-info='name']")
         if (name) { name.textContent = project.name }
+
+        // Project icon
+        const icono = detailsPage.querySelector("[data-project-info='icono']") as HTMLParagraphElement
+        if (icono) {
+            if (project.name == "") {
+                icono.textContent = "ID"
+            } else {
+                icono.textContent = project.name.toUpperCase().substring(0,2)
+            }
+            if (this.list[0].id == project.id) {
+                icono.style.backgroundColor = "#CC8C52"
+            } else {
+                const color = this.getColor(project.id)
+                if (!color) {
+                    return;
+                }
+                icono.style.backgroundColor = color
+            }
+        }
+        
         const description = detailsPage.querySelector("[data-project-info='description']")
         if (description) { description.textContent = project.description }
         const cardName = detailsPage.querySelector("[data-project-info='cardName']")
@@ -130,9 +156,6 @@ export class ProjectsManager {
         URL.revokeObjectURL(url)
     }
 
-    
-
-
     importFromJSON() {
         const input = document.createElement('input')
         input.type = 'file'
@@ -156,5 +179,35 @@ export class ProjectsManager {
             reader.readAsText(filesList[0])
         })
         input.click()
+    }
+
+    colorIcon(id: string) {
+        const project = this.getProject(id);
+        if (!project) {
+            return;
+        }
+        const COLORS = ["#CC6252", "#CC8C52", "#CCB652", "#B8CC52", "#79CC52", "#52CC54"]
+        const colorRandom = COLORS[Math.floor(Math.random() * COLORS.length)]
+        if (Object.keys(this.listIdColor).length == 0) {
+            this.listIdColor[project.id] = "#CC8C52";
+        } else {
+            this.listIdColor[project.id] = colorRandom;
+        }
+        ProjectsManager.iconExportColor = this.listIdColor
+        console.log(ProjectsManager.iconExportColor)
+        return this.listIdColor
+    }
+
+    getColor(id: string) {
+        let color = ""
+        const project = this.getProject(id);
+        if (!project) {
+            return;
+        }
+        const select = Object.keys(this.listIdColor)
+        if (select.includes(project.id)) {
+            color = this.listIdColor[project.id]
+        }        
+        return color
     }
 }

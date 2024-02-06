@@ -1,11 +1,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
 
 :root {
-    --primary: #029ae0;
-    --primary-100: #073044;
-    --primary-200: #415a66;
-    --primary-300: #017cb3;
-    --primary-400: #50b6e6;
+    --primary: #A3CC52;
+    --primary-100: #1f1f1f;
+    --primary-200: #434343;
+    --primary-300: #DDD000;
+    --primary-400: #808080;
     --background: #202124;
     --background-100: #26282b;
     --background-200: #3b3c3f;
@@ -83,10 +83,15 @@ button:hover {
     display: flex;
     flex-direction: column;
     row-gap: 40px;
+    min-height: 100vh;
 }
 
 #company-logo {
     height: 65px;
+    background-color: #A3CC52;
+    border-radius: 10px;
+    cursor: pointer;
+    padding: 10px 10px 10px 0;
 }
 
 #nav-buttons {
