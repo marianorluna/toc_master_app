@@ -1,5 +1,4 @@
 import { v4 as uuidv4 } from 'uuid'
-import { ProjectsManager as PM } from './ProjectsManager'
 
 export type ProjectStatus = "Pending" | "Active" | "Finished"
 export type UserRole = "Architect" | "Engineer" | "Developer"
@@ -26,6 +25,8 @@ export class Project implements IProject {
     cost: number = 100000
     progress: number = 0.6
     id: string
+    listIdColor: Object = {}
+    color: string
 
     constructor(data: IProject){
         // Project data definition
@@ -39,18 +40,18 @@ export class Project implements IProject {
         // this.userRole = data.userRole
         // this.finishDate = data.finishDate
         this.id = uuidv4()
+        this.color = this.getColor(this.id)
         this.setUI()
     }
 
     // creates the project card UI
     setUI() {
-        const color = PM.iconExportColor
         if (this.ui && this.ui instanceof HTMLElement) {return}
         this.ui = document.createElement("div")
         this.ui.className = "project-card"
         this.ui.innerHTML = `
         <div class="card-header">
-            <p style="background-color: ${(Object.keys(color)).includes(this.id) ? color[this.id] : "#CC8C52"}; padding: 10px; border-radius: 8px; aspect-ratio: 1;">${this.name == "" ? "ID" : this.name.toUpperCase().substring(0,2)}</p>
+            <p style="background-color: ${this.color}; padding: 10px; border-radius: 8px; aspect-ratio: 1;">${this.name == "" ? "ID" : this.name.toUpperCase().substring(0,2)}</p>
             <div>
                 <h5>${this.name}</h5>
                 <p>${this.description}</p>
@@ -75,6 +76,24 @@ export class Project implements IProject {
             </div>
         </div>
         `
-        console.log(Object.keys(PM.iconExportColor))
+    }
+
+    colorIcon(id: string) {
+        const COLORS = ["#CC6252", "#CC8C52", "#CCB652", "#B8CC52", "#79CC52", "#52CC54"]
+        const colorRandom = COLORS[Math.floor(Math.random() * COLORS.length)]
+        if (Object.keys(this.listIdColor).length == 0) {
+            this.listIdColor[id] = colorRandom;
+        }
+        return this.listIdColor
+    }
+
+    getColor(id: string) {
+        this.colorIcon(id)
+        let color = ""
+        const select = Object.keys(this.listIdColor)
+        if (select.includes(id)) {
+            color = this.listIdColor[id]
+        }
+        return color
     }
 }

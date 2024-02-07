@@ -3,18 +3,17 @@ import { IProject, Project } from "./Project";
 export class ProjectsManager {
     list: Project[] = [];
     ui: HTMLElement;
-    listIdColor: Object = {};
-    static iconExportColor: Object = {}
-
+    
     constructor(container: HTMLElement) {
         this.ui = container;
-        this.newProject({
-            name: "BIM Proyect",
-            description: "This is just a default app project",
-            status: "Pending",
-            userRole: "Architect",
-            finishDate: new Date(),
-        });
+        // Esto lo habilitamos si queremos un ejemplo al iniciar
+        // this.newProject({
+        //     name: "BIM Proyect",
+        //     description: "This is just a default app project",
+        //     status: "Pending",
+        //     userRole: "Architect",
+        //     finishDate: new Date(),
+        // });
     }
 
     newProject(data: IProject) {
@@ -49,9 +48,6 @@ export class ProjectsManager {
         this.ui.append(project.ui);
         this.list.push(project);
         
-        // Color project icon
-        this.colorIcon(project.id)
-        
         return project;
     }
 
@@ -64,19 +60,11 @@ export class ProjectsManager {
         // Project icon
         const icono = detailsPage.querySelector("[data-project-info='icono']") as HTMLParagraphElement
         if (icono) {
+            icono.style.backgroundColor = project.color
             if (project.name == "") {
                 icono.textContent = "ID"
             } else {
                 icono.textContent = project.name.toUpperCase().substring(0,2)
-            }
-            if (this.list[0].id == project.id) {
-                icono.style.backgroundColor = "#CC8C52"
-            } else {
-                const color = this.getColor(project.id)
-                if (!color) {
-                    return;
-                }
-                icono.style.backgroundColor = color
             }
         }
         
@@ -179,35 +167,5 @@ export class ProjectsManager {
             reader.readAsText(filesList[0])
         })
         input.click()
-    }
-
-    colorIcon(id: string) {
-        const project = this.getProject(id);
-        if (!project) {
-            return;
-        }
-        const COLORS = ["#CC6252", "#CC8C52", "#CCB652", "#B8CC52", "#79CC52", "#52CC54"]
-        const colorRandom = COLORS[Math.floor(Math.random() * COLORS.length)]
-        if (Object.keys(this.listIdColor).length == 0) {
-            this.listIdColor[project.id] = "#CC8C52";
-        } else {
-            this.listIdColor[project.id] = colorRandom;
-        }
-        ProjectsManager.iconExportColor = this.listIdColor
-        console.log(ProjectsManager.iconExportColor)
-        return this.listIdColor
-    }
-
-    getColor(id: string) {
-        let color = ""
-        const project = this.getProject(id);
-        if (!project) {
-            return;
-        }
-        const select = Object.keys(this.listIdColor)
-        if (select.includes(project.id)) {
-            color = this.listIdColor[project.id]
-        }        
-        return color
     }
 }
