@@ -69,21 +69,44 @@ export class ProjectsManager {
         }
         
         const description = detailsPage.querySelector("[data-project-info='description']")
-        if (description) { description.textContent = project.description }
+        if (description) { description.textContent = project.description}
         const cardName = detailsPage.querySelector("[data-project-info='cardName']")
-        if (cardName) { cardName.textContent = project.name }
+        if (cardName) { cardName.textContent = project.name}
         const cardDescription = detailsPage.querySelector("[data-project-info='cardDescription']")
-        if (cardDescription) { cardDescription.textContent = project.description }
+        if (cardDescription) { cardDescription.textContent = project.description}
         const status = detailsPage.querySelector("[data-project-info='status']")
         if (status) { status.textContent = project.status }
         const userRole = detailsPage.querySelector("[data-project-info='userRole']")
         if (userRole) { userRole.textContent = project.userRole }
+        
+        // Get dates with functions
+        // Default start date = today
+        // Default finish date = start date + 30 days
+        const startDate = detailsPage.querySelector("[data-project-info='startDate']")
+        const dateStartGet = this.getDateStart(startDate as HTMLDivElement, project)
         const finishDate = detailsPage.querySelector("[data-project-info='finishDate']")
-        if (finishDate) { 
-            let dateString = project.finishDate
-            let dateObj = new Date(dateString)
-            finishDate.textContent = dateObj.toDateString() 
-        }
+        const dateFinishGet = this.getDateFinish(finishDate as HTMLDivElement, project, dateStartGet)
+        // if (dateStartGet.getTime() > dateFinishGet.getTime()) {
+        //     throw new Error(`Finish date cannot to be bigger than start date.`)
+        // }
+
+        // const cargarDatos = async () => {
+        //     const startDate = detailsPage.querySelector("[data-project-info='startDate']")
+        //     const finishDate = detailsPage.querySelector("[data-project-info='finishDate']")
+        //     let dateStartGet = new Date
+        //     let dateFinishGet = new Date
+        //     try{
+        //         dateStartGet = this.getDateStart(startDate as HTMLDivElement, project)
+        //         dateFinishGet = await this.getDateFinish(finishDate as HTMLDivElement, project, dateStartGet)
+        //     } catch(err) {
+        //         if (dateStartGet.getTime() > dateFinishGet.getTime()) {
+        //             throw err = new Error(`Finish date cannot to be bigger than start date.`)
+        //         }
+        //     }
+        // }
+        
+        // cargarDatos();
+
         const cost = detailsPage.querySelector("[data-project-info='cost']")
         if (cost) { cost.textContent = `$${project.cost}` }
         const progress = detailsPage.querySelector("[data-project-info='progress']") as HTMLDivElement
@@ -167,5 +190,37 @@ export class ProjectsManager {
             reader.readAsText(filesList[0])
         })
         input.click()
+    }
+
+    getDateStart(date: HTMLDivElement, project: Project) {
+        let dateString: Date, dateObj: Date, dateStart: string
+        if (project.startDate.toLocaleDateString() !== "Invalid Date") {
+            dateString = project.startDate
+            dateObj = new Date(dateString)
+            date.textContent = dateObj.toLocaleDateString()
+        } else {
+            let time = Date.now()
+            dateObj = new Date(time)
+            date.textContent = dateObj.toLocaleDateString()
+        }
+        return dateObj
+    }
+
+    getDateFinish(date: HTMLDivElement, project: Project, start: Date) {
+        let dateString: Date, dateObj: Date, time: number
+        if (project.finishDate.toLocaleDateString() !== "Invalid Date") {
+            dateString = project.finishDate
+            dateObj = new Date(dateString)
+            date.textContent = dateObj.toLocaleDateString()
+        } else {
+            time = start.getTime() + 2.628e+9 // 30 days
+            dateObj = new Date(time)
+            date.textContent = dateObj.toLocaleDateString()
+        }
+        return dateObj
+    }
+
+    capitalize (t: string) { 
+        return t[0].toUpperCase() + t.substr(1)
     }
 }
