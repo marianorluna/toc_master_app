@@ -52,6 +52,7 @@ export class Project implements IProject {
         if (this.ui && this.ui instanceof HTMLElement) {return}
         this.ui = document.createElement("div")
         this.ui.className = "project-card"
+        this.ui.id = this.id
         this.ui.innerHTML = `
         <div class="card-header">
             <p style="background-color: ${this.color}; padding: 10px; border-radius: 8px; aspect-ratio: 1;">${this.name == "" ? "ID" : this.name.toUpperCase().substring(0,2)}</p>
