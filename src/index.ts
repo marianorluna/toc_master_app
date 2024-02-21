@@ -37,38 +37,6 @@ function toggleModal(id: string) {
     }
 }
 
-// ESTO NO ESTA RESUELTO AUN
-// Select id card
-const cards = document.body.children[1].children[0].children[3]
-cards.addEventListener("click", () => {
-    console.log(projectsManager.list)
-    console.log(projectsManager.list[0].id)
-    console.log(projectsManager.list[0].ui.id)
-    console.log(projectsManager.ui.children)
-})
-
-// const cards = document.body.children[1].children[0]
-// cards.addEventListener("click", (e) => {
-//     console.log(e.currentTarget)
-//     console.log(cards)
-//     for (let i=0; i < cards.childElementCount; i++) {
-//         if (cards[i]) {
-//             console.log(cards[i])
-//         }
-//     }
-// })
-
-// const allCards = projectsManager.ui.children
-// for (let i = 0; i < allCards.length; i++) {
-//     if (allCards[i].className == "project-card") {
-//         allCards[i].addEventListener("click", (e) => {
-//             const selection = e.target
-//             console.log(selection)
-//         })
-//     }
-// }
-// console.log(allCards)
-
 // Create project
 const newProjectBtn = document.getElementById("new-project-btn");
 if (newProjectBtn) {
@@ -149,28 +117,10 @@ if (editProjectForm && editProjectForm instanceof HTMLFormElement) {
             progress: formData.get("progressProject") as string,
         };
         try {
-            
-            const allCards = projectsManager.ui.children
-            for (let i = 0; i < allCards.length; i++) {
-                if (allCards[i].className == "project-card") {
-                    allCards[i].addEventListener("click", (e) => {
-                    console.log(allCards[i].id)
-                    })
-                }
-            }
-            
-            // console.log(projectsManager.ui.children)
-            
-            
-            // projectsManager.ui.addEventListener("click", (e) => {
-            //     const selection = e.currentTarget as HTMLElement
-            //     console.log(selection)
-            // })
-            // console.log(projectsManager.list[0].id)
-            // projectsManager.getProject("")
             const project = projectsManager.editProject(editProjectData);
             editProjectForm.reset();
             closeModal("edit-project-modal");
+
         } catch (err) {
             const messageError: HTMLDialogElement = document.getElementById("popup-error") as HTMLDialogElement;
             const textError: HTMLParagraphElement = document.getElementById("text-error") as HTMLParagraphElement;
@@ -179,18 +129,8 @@ if (editProjectForm && editProjectForm instanceof HTMLFormElement) {
             messageError.addEventListener('click', () => messageError.close());
         }
     });
-    selectCardIndex()
 } else {
     console.warn("The project form was not found. Check the ID!");
-}
-
-function selectCardIndex () {
-    const listCards = document.querySelectorAll("project-card");
-    for(let i = 0; i<listCards.length;i++) {
-        listCards[i].addEventListener("click", (e) => {  
-        console.log(`Array.from(listCards).indexOf(e.target)`);
-        });
-    }
 }
 
 // Cancel button form edit project

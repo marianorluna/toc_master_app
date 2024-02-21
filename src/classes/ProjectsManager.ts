@@ -34,21 +34,6 @@ export class ProjectsManager {
             projectsPage.style.display = "none"
             detailsPage.style.display = "flex"
             this.setDetailsPage(project)
-
-            ////////////////////////////
-            // console.log("TEXTO CADA VEZ QUE PRESIONO UI CARD")
-            // console.log(project.id)
-            // console.log(this.ui)
-            // console.log(typeof(this.ui))
-            // console.log(this.list[0])
-            // console.log(this.list)
-            // puedo usar el mismo listener para obtener el id
-            // this.ui.addEventListener("click", (e) => {
-            //     const selection = e.currentTarget as HTMLElement
-            //     const cardId = selection.firstChild
-            //     console.log(cardId)
-            // })
-            ///////////////////////////
         })
         // Agregar evento para mostrar página de proyectos
         const projectsButton = document.getElementById("projects-btn")
@@ -64,8 +49,13 @@ export class ProjectsManager {
         this.ui.append(project.ui);
         this.list.push(project);
         
-        console.log(this.ui)
-        console.log(this.list)
+        // console.log(this.ui)
+        // console.log(this.ui.children)
+        // console.log(this.ui.children[0].id)
+        // console.log(this.list)
+        // console.log(this.list[0].id)
+        // console.log(this.list[0].name)
+        // console.log(document.getElementById(this.list[0].id))
 
         return project;
     }
@@ -76,6 +66,15 @@ export class ProjectsManager {
         if (!detailsPage) { return console.warn("Page not found") }
         const name = detailsPage.querySelector("[data-project-info='name']")
         if (name) { name.textContent = project.name }
+        
+        // ID project, create html element 
+        const idDiv = document.createElement("div") as HTMLDivElement
+        idDiv.id = project.id
+        idDiv.hidden = false
+        detailsPage.appendChild(idDiv)
+        // console.log(idDiv)
+        // const lastDiv = detailsPage.lastChild as HTMLDivElement
+        // console.log(lastDiv.id)
 
         // Project icon
         const icono = detailsPage.querySelector("[data-project-info='icono']") as HTMLParagraphElement
@@ -113,81 +112,40 @@ export class ProjectsManager {
         if (cost) { cost.textContent = `$${project.cost}` }
         const progress = detailsPage.querySelector("[data-project-info='progress']") as HTMLDivElement
         if (progress) { 
-            progress.textContent = `${project.progress * 100}%`
-            progress.style.width = `${project.progress * 100}%`;
+            progress.textContent = `${project.progress}%`
+            progress.style.width = `${project.progress}%`;
         }
     }
 
-    // FALTA DESARROLLAR ESTOOOOOOOOO
     editProject(data: Object) {
-        //let projectPropEdited = new Object()
-        const propEdit = Object.keys(data)
-        const propListEdit = this.list.map((projectEdited) => {
-            for (let key in data) {
-                // console.log(projectEdited[key])
-                projectEdited[key] = data[key]
-                // console.log(data[key])
+        // Get ID from html card
+        const detailsPage = document.getElementById("project-details") as HTMLDivElement
+        if (!detailsPage) { return console.warn("Page not found") }
+        const lastDiv = detailsPage.lastChild as HTMLDivElement
+        // Get project that matches with the id
+        const listProjectEdit: Project[] = []
+        const listProjects = this.list.map((project) => {
+            if (lastDiv.id == project.id) { return project } })
+        listProjects.forEach((p) => {
+            if (p != undefined) { 
+                listProjectEdit.push(p)
+                return listProjectEdit 
             }
-            this.setEditProject(projectEdited)
-            
-            
-            
-            // console.log(projectEdited)
-            // console.log(typeof(projectEdited))
-            // console.log(projectEdited.name)
-            return projectEdited
         })
-        // console.log(projectEdited)
-        // console.log(typeof(projectPropEdited))
-        // console.log(this.ui)
+        const projectEdit = listProjectEdit[0]
+        // Convert object data in project data
+        for (let key in data) {
+            projectEdit[key] = data[key]
+        }
+        // Set changes
+        const projectId = this.setEditProject(projectEdit)
+        
+        return projectId
     }
 
     private setEditProject(edited: Project) {
-        // Project name
-        const detailsPage = document.getElementById("project-details") as HTMLDivElement
-        if (!detailsPage) { return console.warn("Page not found") }
-        const name = detailsPage.querySelector("[data-project-info='name']")
-        if (name) { name.textContent = edited.name }
-
-        // Project icon
-        const icono = detailsPage.querySelector("[data-project-info='icono']") as HTMLParagraphElement
-        if (icono) {
-            icono.style.backgroundColor = edited.color
-            if (edited.name == "") {
-                icono.textContent = "ID"
-            } else {
-                icono.textContent = edited.name.toUpperCase().substring(0,2)
-            }
-        }
-        
-        // Project info
-        const description = detailsPage.querySelector("[data-project-info='description']")
-        if (description) { description.textContent = edited.description}
-        const cardName = detailsPage.querySelector("[data-project-info='cardName']")
-        if (cardName) { cardName.textContent = edited.name}
-        const cardDescription = detailsPage.querySelector("[data-project-info='cardDescription']")
-        if (cardDescription) { cardDescription.textContent = edited.description}
-        const status = detailsPage.querySelector("[data-project-info='status']")
-        if (status) { status.textContent = edited.status }
-        const userRole = detailsPage.querySelector("[data-project-info='userRole']")
-        if (userRole) { userRole.textContent = edited.userRole }
-        
-        // Get dates with functions
-        // Default start date = today
-        // Default finish date = start date + 30 days
-        const startDate = detailsPage.querySelector("[data-project-info='startDate']")
-        const dateStartGet = this.getDateStart(startDate as HTMLDivElement, edited)
-        const finishDate = detailsPage.querySelector("[data-project-info='finishDate']")
-        const dateFinishGet = this.getDateFinish(finishDate as HTMLDivElement, edited, dateStartGet)
-
-        // Data project
-        const cost = detailsPage.querySelector("[data-project-info='cost']")
-        if (cost) { cost.textContent = `$${edited.cost}` }
-        const progress = detailsPage.querySelector("[data-project-info='progress']") as HTMLDivElement
-        if (progress) { 
-            progress.textContent = `${edited.progress * 100}%`
-            progress.style.width = `${edited.progress * 100}%`;
-        }
+        this.setDetailsPage(edited)
+        this.setUIEdit(edited)
     }
 
     getDataEditPage() {
@@ -217,14 +175,53 @@ export class ProjectsManager {
         const start = detailsPage.querySelector("[data-project-info='startDate']") as HTMLDivElement
         let startEdit = document.getElementById("edit-form-start") as HTMLInputElement
         let startValue = start.textContent?.split("/").reverse().join("/").replaceAll("/", "-") as string
-        startValue = this.convertFormatDate(startValue)
+        startValue = this.convertFormatDate(startValue) as string
         if (start.textContent) { startEdit.value = startValue }
         // Finish date
         const finish = detailsPage.querySelector("[data-project-info='finishDate']") as HTMLDivElement
         let finishEdit = document.getElementById("edit-form-finish") as HTMLInputElement
         let finishValue = finish.textContent?.split("/").reverse().join("/").replaceAll("/", "-") as string
-        finishValue = this.convertFormatDate(finishValue)
+        finishValue = this.convertFormatDate(finishValue) as string
         if (finish.textContent) { finishEdit.value = finishValue }
+        // Cost
+        const cost = detailsPage.querySelector("[data-project-info='cost'") as HTMLDivElement
+        let costEdit = document.getElementById("edit-form-cost") as HTMLInputElement
+        if (cost.textContent) { costEdit.value = cost.textContent.slice(1) }
+        // Progress
+        const progress = detailsPage.querySelector("[data-project-info='progress'") as HTMLDivElement
+        let progressEdit = document.getElementById("edit-form-progress") as HTMLInputElement
+        if (progress.textContent) { progressEdit.value = progress.textContent.slice(0, -1) }
+    }
+
+    setUIEdit(edited: Project) {
+        edited.dateValidation()
+        edited.ui.innerHTML = `
+        <div class="card-header">
+            <p style="background-color: ${edited.color}; padding: 10px; border-radius: 8px; aspect-ratio: 1;">${edited.name == "" ? "ID" : edited.name.toUpperCase().substring(0,2)}</p>
+            <div>
+                <h5>${edited.nameValidation(edited.name)}</h5>
+                <p>${edited.description}</p>
+            </div>
+        </div>
+        <div class="card-content">
+            <div class="card-property">
+                <p style="color: #969696;">Status</p>
+                <p>${edited.status}</p>
+            </div>
+            <div class="card-property">
+                <p style="color: #969696;">Role</p>
+                <p>${edited.userRole}</p>
+            </div>
+            <div class="card-property">
+                <p style="color: #969696;">Cost</p>
+                <p>$${edited.cost}</p>
+            </div>
+            <div class="card-property">
+                <p style="color: #969696;">Estimated Progress</p>
+                <p>${edited.progress}%</p>
+            </div>
+        </div>
+        `
     }
 
     getProject(id: string) {
@@ -331,29 +328,47 @@ export class ProjectsManager {
         return dateObj
     }
 
-    // Hay que arreglar la función en el caso que length==9 y 8
     convertFormatDate (dateString: string) {
-        // Convert Start Date to format yyyy-mm-dd
+        const startArray = dateString.split("-")
+        let day = startArray[2]
+        let month = startArray[1]
+        let year = startArray[0]
+        // Convert Start Date to format yyyy-mm-dd (10)
         if (dateString.length == 10) {
             return dateString
-        } else {
-            const startArray = dateString.split("-")
-            let month = startArray[1]
+        }
+        // Convert from format yyyy-m-dd (9)
+        else if (dateString.length == 9 && dateString[4] == "-" && dateString[6] == "-") {
+            startArray[0] = year
             month = "0" + month
             startArray[1] = month
+            startArray[2] = day
             dateString = startArray.join("-")
             return dateString
         } 
-        // else {
-        //     const startArray = dateString.split("-")
-        //     let day = startArray[0]
-        //     let month = startArray[1]
-        //     day = "0" + day
-        //     month = "0" + month
-        //     startArray[0] = day
-        //     startArray[1] = month
-        //     dateString = startArray.join("-")
-        //     return dateString
-        // }
+        // Convert from format yyyy-mm-d (9)
+        else if (dateString.length == 9 && dateString[4] == "-" && dateString[7] == "-") {
+            startArray[0] = year
+            startArray[1] = month
+            day = "0" + day
+            startArray[2] = day
+            dateString = startArray.join("-")
+            return dateString
+        }
+        // Convert from format yyyy-m-d (8)
+        else if (dateString.length == 8 && dateString[4] == "-" && dateString[6] == "-") {
+            startArray[0] = year
+            month = "0" + month
+            startArray[1] = month
+            day = "0" + day
+            startArray[2] = day
+            dateString = startArray.join("-")
+            return dateString
+        } 
+        // Defeult value
+        else {
+            dateString = "2000-01-01"
+            return dateString
+        }
     }
 }
