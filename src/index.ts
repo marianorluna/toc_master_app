@@ -1,5 +1,6 @@
 import { IProject, Project, ProjectStatus, UserRole } from "./classes/Project";
 import { ProjectsManager as PM } from "./classes/ProjectsManager";
+import { IToDo, ToDo } from "./classes/ToDo";
 
 // Default project
 const projectsListUI = document.getElementById("projects-list") as HTMLElement;
@@ -139,6 +140,62 @@ cancelEditBtn?.addEventListener("click", () => {
     editProjectForm.reset();
     toggleModal("edit-project-modal")
 })
+
+
+// DESARROLLAR!!!
+// FALTA CONECTAR LOS ToDoS CON SU PROYECTO
+// FALTA QUE APAREZCAN LOS ToDoS EN LA APP
+
+// // Create to-do
+const toDoBtn = document.getElementById("todo-btn")
+if (toDoBtn) {
+    toDoBtn.addEventListener("click", () => {
+        //projectsManager.getDataEditPage()
+        showModal("create-todo-modal")
+    })
+} else {
+    console.warn("Create ToDo button was not found");
+    console.log("Create ToDo btn value: ", toDoBtn);
+}
+
+// // Form to create to-do
+const createToDoForm = document.getElementById("create-todo-form") as HTMLFormElement;
+if (createToDoForm && createToDoForm instanceof HTMLFormElement) {
+    createToDoForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const formData = new FormData(createToDoForm);
+        const createToDoData: IToDo = {
+            content: formData.get("content") as string,
+            todoDate: new Date(formData.get("todoDate") as string),
+        };
+        try {
+            console.log(createToDoData.content)
+            console.log(createToDoData.todoDate.toLocaleDateString())
+
+            const toDo = projectsManager.newToDo(createToDoData);
+            createToDoForm.reset();
+            closeModal("create-todo-modal");
+        } catch (err) {
+            const messageError: HTMLDialogElement = document.getElementById("popup-error") as HTMLDialogElement;
+            const textError: HTMLParagraphElement = document.getElementById("text-error") as HTMLParagraphElement;
+            textError.innerHTML = `${err}`
+            showModal("popup-error")
+            messageError.addEventListener('click', () => messageError.close());
+        }
+    });
+} else {
+    console.warn("The create ToDo form was not found. Check the ID!");
+}
+
+// // Cancel button form create to-do
+const cancelCreateToDoBtn = document.getElementById("cancel-create-todo-btn")
+cancelCreateToDoBtn?.addEventListener("click", () => {
+    createToDoForm.reset();
+    toggleModal("create-todo-modal")
+})
+
+
+
 
 // Export project button
 const exportProjectBtn = document.getElementById("export-projects-btn")

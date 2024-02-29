@@ -1,3 +1,4 @@
+import { IToDo, ToDo } from "./ToDo";
 import { v4 as uuidv4 } from 'uuid'
 
 export type ProjectStatus = "Pending" | "Active" | "Finished"
@@ -29,6 +30,8 @@ export class Project implements IProject {
     id: string
     listIdColor: Object = {}
     color: string
+    toDoList: ToDo[] = []
+    toDoUI: HTMLDivElement
 
     constructor(data: IProject){
         // Project data definition
@@ -44,6 +47,7 @@ export class Project implements IProject {
         this.id = uuidv4()
         this.color = this.getColor(this.id)
         this.setUI()
+        this.setToDoUI()
     }
 
     // creates the project card UI
@@ -80,6 +84,45 @@ export class Project implements IProject {
             </div>
         </div>
         `
+    }
+
+    // creates the project card UI
+    setToDoUI() {
+        //this.dateValidation()
+        let todoCards = document.getElementById("todo-list") as HTMLDivElement
+        // if (this.toDoUI && this.toDoUI instanceof HTMLElement) {return}
+        this.toDoUI = document.createElement("div")
+        this.toDoUI.className = "todo-cards"
+        //this.ui.id = this.id
+        this.toDoUI.innerHTML = ""
+        // `
+        // <div class="card-header">
+        //     <p style="background-color: ${this.color}; padding: 10px; border-radius: 8px; aspect-ratio: 1;">${this.name == "" ? "ID" : this.name.toUpperCase().substring(0,2)}</p>
+        //     <div>
+        //         <h5>${this.nameValidation(this.name)}</h5>
+        //         <p>${this.description}</p>
+        //     </div>
+        // </div>
+        // <div class="card-content">
+        //     <div class="card-property">
+        //         <p style="color: #969696;">Status</p>
+        //         <p>${this.status}</p>
+        //     </div>
+        //     <div class="card-property">
+        //         <p style="color: #969696;">Role</p>
+        //         <p>${this.userRole}</p>
+        //     </div>
+        //     <div class="card-property">
+        //         <p style="color: #969696;">Cost</p>
+        //         <p>$${this.cost}</p>
+        //     </div>
+        //     <div class="card-property">
+        //         <p style="color: #969696;">Estimated Progress</p>
+        //         <p>${this.progress}%</p>
+        //     </div>
+        // </div>
+        // `
+        todoCards.append(this.toDoUI)
     }
 
     colorIcon(id: string) {
@@ -129,4 +172,6 @@ export class Project implements IProject {
             return 
         }
     }
+
+    
 }

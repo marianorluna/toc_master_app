@@ -100,7 +100,7 @@ button:hover {
     row-gap: 15px;
 }
 
-#nav-buttons li, .action-icon {
+#nav-buttons li {
     list-style-type: none;
     padding: 15px;
     border-radius: 10px;
@@ -111,7 +111,7 @@ button:hover {
     column-gap: 10px;
 }
 
-#nav-buttons li:hover, .action-icon:hover {
+#nav-buttons li:hover {
     background-color: var(--primary);
 }
 
@@ -125,6 +125,10 @@ header {
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+
+header h2 {
+    margin-right: 30px;
 }
 
 .project-card {
@@ -225,6 +229,7 @@ select {
     border-radius: 8px;
     border: none;
     font-size: var(--font-base);
+    resize: none;
 }
 
 input:focus,
@@ -275,6 +280,15 @@ select:focus {
     cursor: pointer;
 }
 
-.todo-item:hover {
-    background-color: var(--primary);
+#todo-btn {
+    width: auto;
+}
+
+#import-projects-btn, #export-projects-btn {
+    width: auto;
+    background-color: var(--primary-200);
+}
+
+.todo-item:hover, .btn-files:hover {
+    outline: 2px solid var(--primary);
 }

@@ -1,4 +1,5 @@
 import { IProject, Project } from "./Project";
+import { IToDo, ToDo } from "./ToDo";
 
 export class ProjectsManager {
     list: Project[] = [];
@@ -34,6 +35,14 @@ export class ProjectsManager {
             projectsPage.style.display = "none"
             detailsPage.style.display = "flex"
             this.setDetailsPage(project)
+            
+            console.log("ESTE ES UN CLIC CUANDO SE ENTRA AL PROYECTO")
+            console.log(project.id)
+            
+            // Clean HTML ToDo's and add project's ToDo's
+            let todoList = document.getElementById("todo-list") as HTMLDivElement
+            todoList.innerHTML = ""
+            todoList.appendChild(project.toDoUI)
         })
         // Agregar evento para mostrar página de proyectos
         const projectsButton = document.getElementById("projects-btn")
@@ -131,8 +140,11 @@ export class ProjectsManager {
                 listProjectEdit.push(p)
                 return listProjectEdit 
             }
-        })
+        })        
         const projectEdit = listProjectEdit[0]
+        
+        console.log(projectEdit)
+        
         // Convert object data in project data
         for (let key in data) {
             projectEdit[key] = data[key]
@@ -191,6 +203,88 @@ export class ProjectsManager {
         const progress = detailsPage.querySelector("[data-project-info='progress'") as HTMLDivElement
         let progressEdit = document.getElementById("edit-form-progress") as HTMLInputElement
         if (progress.textContent) { progressEdit.value = progress.textContent.slice(0, -1) }
+    }
+
+    
+    // DESARROLLAR!!!
+    // FALTA CONECTAR LOS ToDoS CON SU PROYECTO
+    // FALTA QUE APAREZCAN LOS ToDoS EN LA APP
+    // FUNCIONA PERO FALTA DEFINIR ALGUNAS COSAS DEL FUNCIONAMIENTO
+    
+    newToDo(data: IToDo) {
+        // Get ID from html card
+        const detailsPage = document.getElementById("project-details") as HTMLDivElement
+        if (!detailsPage) { return console.warn("Page not found") }
+        const lastDiv = detailsPage.lastChild as HTMLDivElement
+        // Get project that matches with the id
+        const listProjectToDo: Project[] = []
+        const listProjects = this.list.map((project) => {
+            if (lastDiv.id == project.id) { return project } })
+        listProjects.forEach((p) => {
+            if (p != undefined) { 
+                listProjectToDo.push(p)
+                return listProjectToDo 
+            }
+        })
+        const projectToDo = listProjectToDo[0]
+        const projectUI = projectToDo.toDoUI
+        const projectListToDo = projectToDo.toDoList
+        // Create ToDo
+        // let todoCards = document.getElementById("todo-list") as HTMLDivElement
+        // todoCards.innerHTML = ""
+        const toDo = new ToDo(data)
+        projectListToDo.push(toDo);
+        
+        console.log(projectToDo.toDoUI)
+        console.log(toDo.ui)
+        // console.log(todoCards)
+
+        for (let td = 0; td < projectListToDo.length; td++) {
+            projectUI.append(projectListToDo[td].ui)
+        }
+        
+        // todoCards.append(toDo.ui)
+
+        console.log(toDo)
+        console.log(projectUI)
+        console.log(projectListToDo)
+        
+
+        // for (let key in data) {
+        //     projectToDo[key] = data[key]
+        // }
+        // // Set changes
+        // const projectId = this.setEditProject(projectToDo)
+        
+
+
+        // return toDo
+        
+        
+        
+        
+        // const toDoId = this.listToDo.map((toDoCard) => {
+        //     return toDoCard.id
+        // })
+        // const idInUse = toDoId.includes(data.id)
+        // if (nameInUse) {
+        //     throw new Error(`A project with the name ${data.name} already exists.`)
+        // }
+
+        
+        
+        // this.ui.append(project.ui);
+        // this.list.push(project);
+        
+        // console.log(this.ui)
+        // console.log(this.ui.children)
+        // console.log(this.ui.children[0].id)
+        // console.log(this.list)
+        // console.log(this.list[0].id)
+        // console.log(this.list[0].name)
+        // console.log(document.getElementById(this.list[0].id))
+
+        // return toDo;
     }
 
     setUIEdit(edited: Project) {
