@@ -50,7 +50,7 @@ export class Project implements IProject {
         this.setToDoUI()
     }
 
-    // creates the project card UI
+    // Creates the project card UI
     setUI() {
         this.dateValidation()
         if (this.ui && this.ui instanceof HTMLElement) {return}
@@ -86,7 +86,7 @@ export class Project implements IProject {
         `
     }
 
-    // creates the project card UI
+    // Creates the project card UI
     setToDoUI() {
         //this.dateValidation()
         let todoCards = document.getElementById("todo-list") as HTMLDivElement
@@ -95,33 +95,6 @@ export class Project implements IProject {
         this.toDoUI.className = "todo-cards"
         //this.ui.id = this.id
         this.toDoUI.innerHTML = ""
-        // `
-        // <div class="card-header">
-        //     <p style="background-color: ${this.color}; padding: 10px; border-radius: 8px; aspect-ratio: 1;">${this.name == "" ? "ID" : this.name.toUpperCase().substring(0,2)}</p>
-        //     <div>
-        //         <h5>${this.nameValidation(this.name)}</h5>
-        //         <p>${this.description}</p>
-        //     </div>
-        // </div>
-        // <div class="card-content">
-        //     <div class="card-property">
-        //         <p style="color: #969696;">Status</p>
-        //         <p>${this.status}</p>
-        //     </div>
-        //     <div class="card-property">
-        //         <p style="color: #969696;">Role</p>
-        //         <p>${this.userRole}</p>
-        //     </div>
-        //     <div class="card-property">
-        //         <p style="color: #969696;">Cost</p>
-        //         <p>$${this.cost}</p>
-        //     </div>
-        //     <div class="card-property">
-        //         <p style="color: #969696;">Estimated Progress</p>
-        //         <p>${this.progress}%</p>
-        //     </div>
-        // </div>
-        // `
         todoCards.append(this.toDoUI)
     }
 
@@ -153,10 +126,21 @@ export class Project implements IProject {
     }
 
     dateValidation() {
-        const start = this.startDate.toLocaleDateString()
-        const finish = this.finishDate.toLocaleDateString()
         const time = Date.now()
         const dateNow = new Date(time)
+        let start: any, finish: any, startGetTime: any, finishGetTime: any
+        if (this.startDate instanceof Date && this.finishDate instanceof Date) {
+            start = this.startDate.toLocaleDateString()
+            startGetTime = this.startDate.getTime()
+            finish = this.finishDate.toLocaleDateString()
+            finishGetTime = this.finishDate.getTime()
+        } else {
+            // If isn't Date is String
+            start = this.startDate
+            startGetTime = new Date(this.startDate).getTime()
+            finish = this.finishDate
+            finishGetTime = new Date(this.finishDate).getTime()
+        }
         if (start == "Invalid Date") { 
             if (finish == "Invalid Date") {
                 return
@@ -165,13 +149,11 @@ export class Project implements IProject {
                 throw new Error(`Finish date cannot to be bigger than start date.`)
             } 
         }
-        else if (start !== "Invalid Date" && this.startDate.getTime() > this.finishDate.getTime()) {
+        else if (start !== "Invalid Date" && startGetTime > finishGetTime) {
             throw new Error(`Finish date cannot to be bigger than start date.`)
         }
         else { 
             return 
         }
     }
-
-    
 }

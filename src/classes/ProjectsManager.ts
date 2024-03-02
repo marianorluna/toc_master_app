@@ -8,14 +8,14 @@ export class ProjectsManager {
     constructor(container: HTMLElement) {
         this.ui = container;
         // Esto lo habilitamos si queremos un ejemplo al iniciar
-        this.newProject({
-            name: "BIM Proyect",
-            description: "This is just a default app project",
-            status: "Finished",
-            userRole: "Engineer",
-            startDate: new Date(),
-            finishDate: new Date(new Date().getTime() + 2.628e+9) // 30 days
-        });
+        // this.newProject({
+        //     name: "BIM Proyect",
+        //     description: "This is just a default app project",
+        //     status: "Finished",
+        //     userRole: "Engineer",
+        //     startDate: new Date(),
+        //     finishDate: new Date(new Date().getTime() + 2.628e+9) // 30 days
+        // });
     }
 
     newProject(data: IProject) {
@@ -36,8 +36,9 @@ export class ProjectsManager {
             detailsPage.style.display = "flex"
             this.setDetailsPage(project)
             
-            console.log("ESTE ES UN CLIC CUANDO SE ENTRA AL PROYECTO")
-            console.log(project.id)
+            // console.log("ESTE ES UN CLIC CUANDO SE ENTRA AL PROYECTO")
+            // console.log(project.id)
+            // console.log(project.ui.id)
             
             // Clean HTML ToDo's and add project's ToDo's
             let todoList = document.getElementById("todo-list") as HTMLDivElement
@@ -204,12 +205,6 @@ export class ProjectsManager {
         let progressEdit = document.getElementById("edit-form-progress") as HTMLInputElement
         if (progress.textContent) { progressEdit.value = progress.textContent.slice(0, -1) }
     }
-
-    
-    // DESARROLLAR!!!
-    // FALTA CONECTAR LOS ToDoS CON SU PROYECTO
-    // FALTA QUE APAREZCAN LOS ToDoS EN LA APP
-    // FUNCIONA PERO FALTA DEFINIR ALGUNAS COSAS DEL FUNCIONAMIENTO
     
     newToDo(data: IToDo) {
         // Get ID from html card
@@ -229,62 +224,32 @@ export class ProjectsManager {
         const projectToDo = listProjectToDo[0]
         const projectUI = projectToDo.toDoUI
         const projectListToDo = projectToDo.toDoList
-        // Create ToDo
-        // let todoCards = document.getElementById("todo-list") as HTMLDivElement
-        // todoCards.innerHTML = ""
-        const toDo = new ToDo(data)
-        projectListToDo.push(toDo);
         
-        console.log(projectToDo.toDoUI)
-        console.log(toDo.ui)
-        // console.log(todoCards)
+        // Create ToDo
+        if (data.content.length < 3) {
+            throw new Error(`The content of the ToDo must be a minimum of 3 characters.`)
+        }
+        if (data.todoDate.toDateString() == "Invalid Date") {
+            throw new Error(`You have not selected any dates yet.`)
+        }
+        const toDo = new ToDo(data)
+        projectListToDo.push(toDo)
+        
+        // console.log(projectToDo.toDoUI)
+        // console.log(toDo.ui)
+        // console.log(toDo.content.length)
 
         for (let td = 0; td < projectListToDo.length; td++) {
             projectUI.append(projectListToDo[td].ui)
         }
-        
-        // todoCards.append(toDo.ui)
 
-        console.log(toDo)
-        console.log(projectUI)
-        console.log(projectListToDo)
+        // console.log(toDo)
+        // console.log(projectUI)
+        // console.log(projectListToDo)
         
-
-        // for (let key in data) {
-        //     projectToDo[key] = data[key]
-        // }
-        // // Set changes
-        // const projectId = this.setEditProject(projectToDo)
+        // console.log(projectToDo)
         
-
-
-        // return toDo
-        
-        
-        
-        
-        // const toDoId = this.listToDo.map((toDoCard) => {
-        //     return toDoCard.id
-        // })
-        // const idInUse = toDoId.includes(data.id)
-        // if (nameInUse) {
-        //     throw new Error(`A project with the name ${data.name} already exists.`)
-        // }
-
-        
-        
-        // this.ui.append(project.ui);
-        // this.list.push(project);
-        
-        // console.log(this.ui)
-        // console.log(this.ui.children)
-        // console.log(this.ui.children[0].id)
-        // console.log(this.list)
-        // console.log(this.list[0].id)
-        // console.log(this.list[0].name)
-        // console.log(document.getElementById(this.list[0].id))
-
-        // return toDo;
+        return toDo
     }
 
     setUIEdit(edited: Project) {
@@ -352,7 +317,7 @@ export class ProjectsManager {
         return totalCost;
     }
 
-    exportToJSON(filename: string = "projects.json") {
+    exportToJSON(filename: string = "arqfi_projects.json") {
         function removeUI(key, value) {
             if (key === "ui") {
                 return undefined;
@@ -377,12 +342,75 @@ export class ProjectsManager {
         reader.addEventListener("load", () => {
             const json = reader.result
             if (!json) { return }
-            const projects: IProject[] = JSON.parse(json as string)
+            const projects: Project[] = JSON.parse(json as string)
             for (const project of projects) {
                 try {
-                    this.newProject(project)
+                    const readProject = this.newProject(project)
+                    readProject.color = project.color
+                    readProject.id = project.id
+                    readProject.ui.id = project.id
+                    if (readProject.startDate == null) {
+                        readProject.startDate = new Date(Date.now())
+                    }
+                    if (readProject.finishDate == null) {
+                        readProject.finishDate = new Date(Date.now())
+                    }
+                    readProject.ui.innerHTML = 
+                    `
+                    <div class="card-header">
+                        <p style="background-color: ${readProject.color}; padding: 10px; border-radius: 8px; aspect-ratio: 1;">${readProject.name == "" ? "ID" : readProject.name.toUpperCase().substring(0,2)}</p>
+                        <div>
+                            <h5>${readProject.name}</h5>
+                            <p>${readProject.description}</p>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-property">
+                            <p style="color: #969696;">Status</p>
+                            <p>${readProject.status}</p>
+                        </div>
+                        <div class="card-property">
+                            <p style="color: #969696;">Role</p>
+                            <p>${readProject.userRole}</p>
+                        </div>
+                        <div class="card-property">
+                            <p style="color: #969696;">Cost</p>
+                            <p>$${readProject.cost}</p>
+                        </div>
+                        <div class="card-property">
+                            <p style="color: #969696;">Estimated Progress</p>
+                            <p>${readProject.progress}%</p>
+                        </div>
+                    </div>
+                    `
+                    readProject.toDoUI.innerHTML = ""
+                    for (let t of readProject.toDoList) {
+                        t.ui = document.createElement("div")
+                        t.ui.id = t.id
+                        t.ui.style.display = "flex"
+                        t.ui.style.flexDirection = "column"
+                        t.ui.style.padding = "10px 30px"
+                        t.ui.style.rowGap = "20px"
+                        t.ui.innerHTML = `
+                        <div class="todo-item">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div style="display: flex; column-gap: 15px; align-items: center;">
+                                <span class="material-icons-round" style="padding: 10px; background-color: #686868; border-radius: 10px;">construction</span>
+                                <p>${t.content}</p>
+                                </div>
+                                <p style="text-wrap: nowrap; margin-left: 10px;">${new Date(t.todoDate).toLocaleDateString()}</p>
+                            </div>
+                        </div>
+                        `
+                        readProject.toDoUI.append(t.ui)
+                    }
+                    // console.log(project)
+                    // console.log(project.color)
+                    // console.log(readProject)
+                    // console.log(readProject.toDoUI)
+                    // console.log(readProject.toDoList)
                 } catch (error) {
-                    
+                    console.log(error)
                 }
             }
         })
@@ -395,9 +423,15 @@ export class ProjectsManager {
     }
 
     getDateStart(date: HTMLDivElement, project: Project) {
-        let dateString: Date, dateObj: Date, dateStart: string
-        if (project.startDate.toLocaleDateString() !== "Invalid Date") {
-            dateString = project.startDate
+        let dateString: Date, dateObj: Date, dateStart: string, start: any
+        if (project.startDate instanceof Date) {
+            start = project.startDate
+        } else {
+            // If isn't Date is String
+            start = new Date(project.startDate)
+        }
+        if (start.toLocaleDateString() !== "Invalid Date") {
+            dateString = start
             dateObj = new Date(dateString)
             date.textContent = dateObj.toLocaleDateString()
         } else {
@@ -409,9 +443,15 @@ export class ProjectsManager {
     }
 
     getDateFinish(date: HTMLDivElement, project: Project, start: Date) {
-        let dateString: Date, dateObj: Date, time: number
-        if (project.finishDate.toLocaleDateString() !== "Invalid Date") {
-            dateString = project.finishDate
+        let dateString: Date, dateObj: Date, time: number, finish: any
+        if (project.finishDate instanceof Date) {
+            finish = project.finishDate
+        } else {
+            // If isn't Date is String
+            finish = new Date(project.finishDate)
+        }
+        if (finish.toLocaleDateString() !== "Invalid Date") {
+            dateString = finish
             dateObj = new Date(dateString)
             date.textContent = dateObj.toLocaleDateString()
         } else {
