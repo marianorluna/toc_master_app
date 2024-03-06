@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Arqfi BIM</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Round">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined">
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="./assets/company-favicon.svg" type="image/x-icon">
 </head>
@@ -162,22 +163,37 @@
             <input id="edit-form-progress" name="progressProject" type="number" step="0.01" min="0" max="100" placeholder="50,00" />
             <p style="color: gray; font-size: var(--font-sm); margin-top: 5px; font-style: italic;">TIP: Value must be between 0 and 100%</p>
           </div>
-          <div style="display: flex; margin: 10px 0px 10px auto; column-gap: 10px;">
-            <button id="cancel-edit-btn" type="button" style="background-color: transparent;" value="cancel">Cancel</button>
-            <button type="submit">Accept</button>
+          <div id="edit-form-btns">
+            <button id="delete-edit-btn" class="btn-secondary btn-delete" type="button" value="delete">Delete Project</button>
+            <div style="display: flex; gap: 20px;">
+              <button id="cancel-edit-btn" type="button" style="background-color: transparent;" value="cancel">Cancel</button>
+              <button type="submit">Accept</button>
+            </div>
           </div>
         </div>
       </form>
     </dialog>
-
     <!-- Error page -->
-      <dialog id="popup-error">
-        <form>
-          <h2>Message</h2>
-          <p id="text-error"></p>
-        </form>
-      </dialog>
-    
+    <dialog id="popup-error">
+      <form>
+        <h2>Message</h2>
+        <p id="text-error"></p>
+        <div style="display: flex; border-top: 2px solid #434343;">
+          <button id="error-popup-btn" type="button">Accept</button>
+        </div>
+      </form>
+    </dialog>
+    <!-- Choice page -->
+    <dialog id="popup-choice">
+      <form>
+        <h2>Message</h2>
+        <p id="text-choice"></p>
+        <div>
+          <button id="cancel-popup-btn" style="background-color: transparent;" type="button">Cancel</button>
+          <button id="accept-popup-btn" type="button">Accept</button>
+        </div>
+      </form>
+    </dialog>
     <!-- Task create to-do -->
     <dialog id="create-todo-modal">
       <form id="create-todo-form">
@@ -196,6 +212,15 @@
             <input id="todo-form-date" name="todoDate" type="date" />
             <p style="color: gray; font-size: var(--font-sm); margin-top: 5px; font-style: italic;">TIP: Default start date is today</p>
           </div>
+          <div class="form-field-container">
+            <label><span class="material-icons-round">not_listed_location</span>States</label>
+            <select name="state">
+              <option>Active</option>
+              <option>Pending</option>
+              <option>Finished</option>
+              <option>Discarded</option>
+            </select>
+          </div>
           <div style="display: flex; margin: 10px 0px 10px auto; column-gap: 10px;">
             <button id="cancel-create-todo-btn" type="button" style="background-color: transparent;" value="cancel">Cancel</button>
             <button type="submit">Accept</button>
@@ -203,8 +228,47 @@
         </div>
       </form>
     </dialog>
-
-
+    <!-- Task edit to-do -->
+    <dialog id="edit-todo-modal">
+      <form id="edit-todo-form">
+        <h2>Edit To-Do</h2>
+        <div class="input-list">
+          <div class="form-field-container">
+            <label><span class="material-icons-round">subject</span>Task Content</label>
+            <textarea id="todo-edit-content" name="content" cols="30" rows="5" placeholder="Here we write the content of the pending task to be executed." maxlength="100"></textarea>
+            <p style="color: gray; font-size: var(--font-sm); margin-top: 5px; font-style: italic;">TIP: The content must be no more than 100 characters</p>
+          </div>
+          <div class="form-field-container">
+            <label for="todoDate">
+              <span class="material-icons-round">calendar_month</span>
+              Task Date
+            </label>
+            <input id="todo-edit-date" name="todoDate" type="date" />
+            <p style="color: gray; font-size: var(--font-sm); margin-top: 5px; font-style: italic;">TIP: Default start date is today</p>
+          </div>
+          <div class="form-field-container">
+            <label><span class="material-icons-round">not_listed_location</span>States</label>
+            <select id="todo-edit-state" name="state">
+              <option>Active</option>
+              <option>Pending</option>
+              <option>Finished</option>
+              <option>Discarded</option>
+            </select>
+          </div>
+          <div id="edit-todo-btns">
+            <button id="delete-todo-btn" class="btn-secondary btn-delete" type="button" value="delete">Delete ToDo</button>
+            <div style="display: flex; gap: 20px;">
+              <button id="cancel-todo-btn" type="button" style="background-color: transparent;" value="cancel">Cancel</button>
+              <button type="submit">Accept</button>
+            </div>
+          </div>
+          <!-- <div style="display: flex; margin: 10px 0px 10px auto; column-gap: 10px;">
+            <button id="cancel-create-todo-btn" type="button" style="background-color: transparent;" value="cancel">Cancel</button>
+            <button type="submit">Accept</button>
+          </div> -->
+        </div>
+      </form>
+    </dialog>
     <!-- Details page -->
     <div class="page" id="project-details" style="display: none;">
       <header>
@@ -271,20 +335,18 @@
             </div>
             <!-- Gererate cards ToDo ui -->
             <div id="todo-list">
-
-            </div>
-            <!-- Tasks card -->
-            <!-- <div style="display: flex; flex-direction: column; padding: 10px 30px; row-gap: 20px;">
-              <div class="todo-item">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <div style="display: flex; column-gap: 15px; align-items: center;">
-                    <span class="material-icons-round" style="padding: 10px; background-color: #686868; border-radius: 10px;">construction</span>
-                    <p>333 Make anything here as you want, even something longer.</p>
+              <!-- <div style="display: flex; flex-direction: column; padding: 10px 30px; row-gap: 20px;">
+                <div class="todo-item">
+                  <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <div style="display: flex; column-gap: 15px; align-items: center;">
+                      <span class="material-icons-round" style="padding: 10px; background-color: #686868; border-radius: 10px;">construction</span>
+                      <p>333 Make anything here as you want, even something longer.</p>
+                    </div>
+                    <p style="text-wrap: nowrap; margin-left: 10px;">Fri, 20 sep</p>
                   </div>
-                  <p style="text-wrap: nowrap; margin-left: 10px;">Fri, 20 sep</p>
                 </div>
-              </div>
-            </div> -->
+              </div> -->
+            </div>
           </div>
         </div>
         <!-- Right side details -->
@@ -293,6 +355,10 @@
       </div>
     </div>
   </main>
+  <!-- Start page -->
+  <div id="start-page">
+    <img id="img-start" src="./assets/company-start.svg" alt="company-logo" />
+  </div>
   <script type="module" src="./src/index.ts"></script>
 </body>
 </html>

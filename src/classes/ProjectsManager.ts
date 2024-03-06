@@ -8,14 +8,14 @@ export class ProjectsManager {
     constructor(container: HTMLElement) {
         this.ui = container;
         // Esto lo habilitamos si queremos un ejemplo al iniciar
-        // this.newProject({
-        //     name: "BIM Proyect",
-        //     description: "This is just a default app project",
-        //     status: "Finished",
-        //     userRole: "Engineer",
-        //     startDate: new Date(),
-        //     finishDate: new Date(new Date().getTime() + 2.628e+9) // 30 days
-        // });
+        this.newProject({
+            name: "BIM Proyect",
+            description: "This is just a default app project",
+            status: "Finished",
+            userRole: "Engineer",
+            startDate: new Date(),
+            finishDate: new Date(new Date().getTime() + 2.628e+9) // 30 days
+        });
     }
 
     newProject(data: IProject) {
@@ -23,6 +23,7 @@ export class ProjectsManager {
             return project.name
         })
         const nameInUse = projectNames.includes(data.name)
+        // Create or Import
         if (nameInUse) {
             throw new Error(`A project with the name ${data.name} already exists.`)
         }
@@ -39,11 +40,17 @@ export class ProjectsManager {
             // console.log("ESTE ES UN CLIC CUANDO SE ENTRA AL PROYECTO")
             // console.log(project.id)
             // console.log(project.ui.id)
+            // console.log(this.editToDo())
             
             // Clean HTML ToDo's and add project's ToDo's
             let todoList = document.getElementById("todo-list") as HTMLDivElement
             todoList.innerHTML = ""
             todoList.appendChild(project.toDoUI)
+
+            // Select and edit ToDo
+            this.getToDoSelected()
+            // const idtodo = this.getToDoSelected()
+            // console.log(idtodo)
         })
         // Agregar evento para mostrar página de proyectos
         const projectsButton = document.getElementById("projects-btn")
@@ -127,32 +134,14 @@ export class ProjectsManager {
         }
     }
 
-    editProject(data: Object) {
-        // Get ID from html card
-        const detailsPage = document.getElementById("project-details") as HTMLDivElement
-        if (!detailsPage) { return console.warn("Page not found") }
-        const lastDiv = detailsPage.lastChild as HTMLDivElement
-        // Get project that matches with the id
-        const listProjectEdit: Project[] = []
-        const listProjects = this.list.map((project) => {
-            if (lastDiv.id == project.id) { return project } })
-        listProjects.forEach((p) => {
-            if (p != undefined) { 
-                listProjectEdit.push(p)
-                return listProjectEdit 
-            }
-        })        
-        const projectEdit = listProjectEdit[0]
-        
-        console.log(projectEdit)
-        
+    editProject(data: Object) {      
+        const projectEdit = this.getProjectSelected() as Project
         // Convert object data in project data
         for (let key in data) {
             projectEdit[key] = data[key]
         }
         // Set changes
         const projectId = this.setEditProject(projectEdit)
-        
         return projectId
     }
 
@@ -207,21 +196,7 @@ export class ProjectsManager {
     }
     
     newToDo(data: IToDo) {
-        // Get ID from html card
-        const detailsPage = document.getElementById("project-details") as HTMLDivElement
-        if (!detailsPage) { return console.warn("Page not found") }
-        const lastDiv = detailsPage.lastChild as HTMLDivElement
-        // Get project that matches with the id
-        const listProjectToDo: Project[] = []
-        const listProjects = this.list.map((project) => {
-            if (lastDiv.id == project.id) { return project } })
-        listProjects.forEach((p) => {
-            if (p != undefined) { 
-                listProjectToDo.push(p)
-                return listProjectToDo 
-            }
-        })
-        const projectToDo = listProjectToDo[0]
+        const projectToDo = this.getProjectSelected() as Project
         const projectUI = projectToDo.toDoUI
         const projectListToDo = projectToDo.toDoList
         
@@ -248,8 +223,86 @@ export class ProjectsManager {
         // console.log(projectListToDo)
         
         // console.log(projectToDo)
+
+        //this.editToDo()
         
         return toDo
+    }
+
+    editToDo() {
+        // const projectCurrent = this.getProjectSelected() as Project
+        // if(!projectCurrent) { return }
+        // const toDoS = projectCurrent.toDoList
+
+        // const formEditToDo = document.getElementById("")
+
+        // for (let i=0;i < toDoS.length;i++){
+        //     toDoS[i].ui.addEventListener("click", () => {
+        //         console.log(toDoS[i].color)
+        //         console.log(toDoS[i])
+        //         return toDoS[i]
+        //     })
+        // }
+        
+
+        // FALTAAAAAAAAAAAA
+        // this.getDataEditTodo()
+        // const toDoConsole = this.getToDoSelected()
+        // console.log(typeof(toDoConsole))
+
+
+        // const todoEdit = this.getProjectSelected()
+        // if (this.list.length != 0 && todoEdit) {
+        //     const toDoS = todoEdit.toDoList
+        //     for (let i=0;i < todoEdit.toDoList.length;i++){
+        //         toDoS[i].ui.addEventListener("click", () => {
+        //             // console.log(toDoS[i].color)
+        //             // console.log(toDoS[i])
+        //             // console.log(toDoS[i].id)
+        //             // console.log(toDoS[i].ui.id)
+                    
+        //             showModal("edit-todo-modal")
+        //             // projectsManager.editToDo()
+        //             projectsManager.getToDoSelected()
+        //             console.log(todoEdit.toDoList)
+        //         })
+        //     }
+        // } else {
+        //     console.log("There is an error")
+        // }
+
+
+
+
+    }
+
+    // RELLENA EL FORMULARIO, PERO FALTA QUE RELLENE LA TASK CORRECTA
+    // FALTA BOTON CANCEL
+    // FALTA BOTON ACEPTAR PARA MODIFICAR
+    // FALTA BOTON ELIMINAR
+
+
+    getDataEditTodo() {
+        // Get all data of ToDo form
+        // Data from Todo and form
+        const listCards = document.getElementById("todo-list") as HTMLDivElement
+        if (!listCards) { return console.warn("Page not found") }
+        const editForm = document.getElementById("edit-todo-form") as HTMLFormElement
+        if (!editForm) { return console.warn("Page not found") }
+        // Content
+        const description = listCards.querySelector("[data-project-info='todoContent']") as HTMLDivElement
+        const descriptionEdit = document.getElementById("todo-edit-content") as HTMLInputElement
+        if (description.textContent) { descriptionEdit.value = description.textContent }
+        // ToDo date
+        const dateToDoForm = listCards.querySelector("[data-project-info='todoDate']") as HTMLDivElement
+        let todoDate = document.getElementById("todo-edit-date") as HTMLInputElement
+        let todoDateValue = dateToDoForm.textContent?.split("/").reverse().join("/").replaceAll("/", "-") as string
+        todoDateValue = this.convertFormatDate(todoDateValue) as string
+        if (dateToDoForm.textContent) { todoDate.value = todoDateValue }
+        // State
+        const state = listCards.querySelector("[data-project-info='todoState']") as HTMLDivElement
+        const todoSate = document.getElementById("todo-edit-state") as HTMLInputElement
+        if (state.textContent) { todoSate.value = state.textContent }
     }
 
     setUIEdit(edited: Project) {
@@ -297,6 +350,39 @@ export class ProjectsManager {
         return project;
     }
 
+    getProjectSelected() {
+        // Get ID from html card
+        const detailsPage = document.getElementById("project-details") as HTMLDivElement
+        if (!detailsPage) { return console.warn("Page not found") }
+        const lastDiv = detailsPage.lastChild as HTMLDivElement
+        // Get project that matches with the id
+        const listProjectEdit: Project[] = []
+        const listProjects = this.list.map((project) => {
+            if (lastDiv.id == project.id) { return project } })
+        listProjects.forEach((p) => {
+            if (p != undefined) { 
+                listProjectEdit.push(p)
+                return listProjectEdit 
+            }
+        })        
+        return listProjectEdit[0]
+    }
+
+    getToDoSelected() {
+        let idToDo 
+        const toDosUI = document.querySelectorAll(".todo-class")
+        toDosUI.forEach((toDoCard) => {
+            toDoCard.addEventListener('click', () => {
+                // Select ToDo's ID
+                console.log(toDoCard.id);
+                console.log(toDoCard);
+                idToDo =  toDoCard.id
+            });
+        });
+        console.log(toDosUI)
+        return idToDo
+    }
+
     deleteProject(id: string) {
         const project = this.getProject(id);
         if (!project) {
@@ -307,6 +393,13 @@ export class ProjectsManager {
             return project.id !== id;
         });
         this.list = remaining;
+    }
+
+    deleteProjectSelected() {
+        const idDelete = this.getProjectSelected() as Project
+        if(idDelete) {
+            this.deleteProject(idDelete.id)
+        }
     }
 
     getTotalCost() {
@@ -387,28 +480,33 @@ export class ProjectsManager {
                     for (let t of readProject.toDoList) {
                         t.ui = document.createElement("div")
                         t.ui.id = t.id
+                        t.ui.className = "todo-class"
                         t.ui.style.display = "flex"
                         t.ui.style.flexDirection = "column"
                         t.ui.style.padding = "10px 30px"
                         t.ui.style.rowGap = "20px"
-                        t.ui.innerHTML = `
-                        <div class="todo-item">
+                        t.ui.innerHTML =
+                        `
+                        <div class="todo-item" style="background-color: ${t.color};">
                             <div style="display: flex; justify-content: space-between; align-items: center;">
                                 <div style="display: flex; column-gap: 15px; align-items: center;">
-                                <span class="material-icons-round" style="padding: 10px; background-color: #686868; border-radius: 10px;">construction</span>
-                                <p>${t.content}</p>
+                                    ${t.icon}
+                                    <p data-project-info="todoContent">${t.content}</p>
                                 </div>
-                                <p style="text-wrap: nowrap; margin-left: 10px;">${new Date(t.todoDate).toLocaleDateString()}</p>
+                                <p data-project-info="todoDate" style="text-wrap: nowrap; margin-left: 10px;">${new Date(t.todoDate).toLocaleDateString()}</p>
+                                <div data-project-info="todoState" style="display: none">${t.state}</div>
                             </div>
                         </div>
                         `
                         readProject.toDoUI.append(t.ui)
                     }
+                    console.log(this.list)
+                    console.log(readProject)
                     // console.log(project)
                     // console.log(project.color)
                     // console.log(readProject)
                     // console.log(readProject.toDoUI)
-                    // console.log(readProject.toDoList)
+                    console.log(readProject.toDoList)
                 } catch (error) {
                     console.log(error)
                 }

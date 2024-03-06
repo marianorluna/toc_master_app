@@ -1,11 +1,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap");
 
 :root {
-    --primary: #A3CC52;
+    --primary: #a3cc52;
     --primary-100: #1f1f1f;
     --primary-200: #434343;
     --primary-300: #DDD000;
     --primary-400: #808080;
+    --primary-500: #d2400b;
     --background: #202124;
     --background-100: #26282b;
     --background-200: #3b3c3f;
@@ -26,11 +27,15 @@
     hyphens: auto;
 }
 
+html, body {  
+    margin:0px;  
+    height:100%;
+} 
+
 body {
-    display: grid;
+    display: flex;
     grid-template-columns: 300px 1fr;
     grid-template-areas: "sidebar content";
-    height: 100vh;
     background-color: var(--background);
     color: #fff;
 }
@@ -77,14 +82,41 @@ button:hover {
     height: 100%;
 }
 
+/* StartPage Styles */
+@keyframes rotate {from {transform: rotate(0deg);}
+    to {transform: rotate(360deg);}}
+@-webkit-keyframes rotate {from {-webkit-transform: rotate(0deg);}
+  to {-webkit-transform: rotate(360deg);}}
+
+#start-page {
+    background: radial-gradient(circle, rgba(163,204,82,1) 0%, rgba(32,33,36,1) 95%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 100%;
+}
+
+#img-start {
+    width: 15vw;
+    filter: drop-shadow(0 0 1rem rgba(255, 255, 255, 0.9));
+    -webkit-animation: 3s rotate linear infinite;
+    animation: 3s rotate linear infinite;
+    -webkit-transform-origin: 50% 50%;
+    transform-origin: 50% 50%;
+}
+
+#img-start:hover {
+    cursor: pointer;
+}
+
 /* Sidebar styles */
 
 #sidebar {
     background-color: var(--background-100);
-    padding: 25px;
-    display: flex;
+    display: none;
     flex-direction: column;
-    row-gap: 40px;
     min-height: 100vh;
 }
 
@@ -94,12 +126,14 @@ button:hover {
     border-radius: 10px;
     cursor: pointer;
     padding: 10px 10px 10px 0;
+    margin: 25px;
 }
 
 #nav-buttons {
     display: flex;
     flex-direction: column;
     row-gap: 15px;
+    margin: 25px;
 }
 
 #nav-buttons li {
@@ -120,6 +154,8 @@ button:hover {
 /* Content styles */
 
 #content {
+    display: none;
+    min-height: 100%;
 }
 
 header {
@@ -232,18 +268,13 @@ select {
     border: none;
     font-size: var(--font-base);
     resize: none;
+    word-break: normal;
 }
 
 input:focus,
 textarea:focus,
 select:focus {
     outline: 2px solid var(--primary);
-}
-
-#text-error {
-    padding: 60px;
-    font-size: x-large;
-    text-align: center;
 }
 
 /* Project details page */
@@ -293,4 +324,44 @@ select:focus {
 
 .todo-item:hover, .btn-files:hover {
     outline: 2px solid var(--primary);
+}
+
+.todo-item div div span {
+    padding: 10px;
+    background-color: #686868;
+    border-radius: 10px;
+}
+
+#edit-form-btns, #edit-todo-btns {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0px 10px 0;
+}
+
+#delete-edit-btn, #delete-todo-btn {
+    justify-self: start;
+}
+
+.btn-delete {
+    width: auto;
+}
+
+.btn-delete:hover {
+    background-color: var(--primary-500);
+}
+
+#popup-choice form div, #popup-error form div {
+    display: flex;
+    justify-content: flex-end;
+    gap: 20px;
+    margin: 20px 0 20px auto;
+    padding: 20px 30px 20px 0;
+    border-top: 2px solid var(--background-200);
+}
+
+#text-error, #text-choice {
+    padding: 60px;
+    font-size: var(--font-2xl);
+    text-align: center;
+    word-break: normal;
 }
