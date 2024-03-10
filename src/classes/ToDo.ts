@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
+import { ProjectsManager as PM } from "./ProjectsManager";
 
 export type ToDoStates = "Active" | "Pending" | "Finished" | "Discarded";
 
@@ -25,9 +26,60 @@ export class ToDo implements IToDo {
         this.content = data.content;
         this.todoDate = data.todoDate;
         this.state = data.state;
+        
         this.listStates = this.setListStates()
+        // this.listStates = setListStates()
+        // function setListStates() {
+        //     let listStates: Object[] = [];
+        //     // Active
+        //     listStates[0] = {'Active': '<span class="material-icons-outlined">arrow_circle_right</span>', 'color': 'green'};
+        //     // Pending
+        //     listStates[1] = {'Pending': '<span class="material-icons-outlined">pending</span>', 'color': 'yellow'};
+        //     // Finished
+        //     listStates[2] = {'Finished': '<span class="material-icons-outlined">task_alt</span>', 'color': 'red'};
+        //     // Discarded
+        //     listStates[3] = {'Discarded': '<span class="material-icons-outlined">highlight_off</span>', 'color': 'gray'};
+        //     return listStates;
+        // }
+
         this.icon = this.setIconTodo(this.state)
+        // this.icon = setIconToDo(this.state)
+        // function setIconToDo(state: string): string {
+        //     if (state == 'Active') {
+        //         return this.listStates[0][state]
+        //     }
+        //     else if (state == 'Pending') {
+        //         return this.listStates[1][state]
+        //     }
+        //     else if (state == 'Finished') {
+        //         return this.listStates[2][state]
+        //     }
+        //     else if (state == 'Discarded') {
+        //         return this.listStates[3][state]
+        //     } else {
+        //         return "ICO-NO"
+        //     }
+        // }
+        
         this.color = this.setColorTodo(this.state)
+        // this.color = setColorToDo(this.state)
+        // function setColorToDo(state: string): string {
+        //     if (state == "Active") {
+        //         return this.listStates[0]['color']
+        //     }
+        //     else if (state == "Pending") {
+        //         return this.listStates[1]['color']
+        //     }
+        //     else if (state == "Finished") {
+        //         return this.listStates[2]['color']
+        //     }
+        //     else if (state == "Discarded") {
+        //         return this.listStates[3]['color']
+        //     } else {
+        //         return "blue"
+        //     }
+        // }
+
         this.id = uuidv4();
         this.setUI();
     }
@@ -44,18 +96,19 @@ export class ToDo implements IToDo {
         this.ui.style.flexDirection = "column";
         this.ui.style.padding = "10px 30px";
         this.ui.style.rowGap = "20px";
-        this.ui.innerHTML = `
+        this.ui.innerHTML = 
+        `
         <div class="todo-item" style="background-color: ${this.color};">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <div style="display: flex; column-gap: 15px; align-items: center;">
+            <div class="todo-item-1" style="display: flex; justify-content: space-between; align-items: center;">
+                <div class="todo-item-2" style="display: flex; column-gap: 15px; align-items: center;">
                     ${this.icon}
-                    <p data-project-info="todoContent">${this.content}</p>
+                    <p class="todo-item-3" data-project-info="todoContent">${this.content}</p>
                 </div>
-                <p data-project-info="todoDate" style="text-wrap: nowrap; margin-left: 10px;">${this.todoDate.toLocaleDateString()}</p>
-                <div data-project-info="todoState" style="display: none">${this.state}</div>
+                <p class="todo-item-2" data-project-info="todoDate" style="text-wrap: nowrap; margin-left: 10px;">${this.todoDate instanceof Date ? this.todoDate.toLocaleDateString() : new Date(this.todoDate).toLocaleDateString()}</p>
+                <div class="todo-item-2" data-project-info="todoState" style="display: none">${this.state}</div>
             </div>
         </div>
-        `;
+        `
     }
 
     // Create states list
@@ -72,93 +125,39 @@ export class ToDo implements IToDo {
         return listStates;
     }
 
-    // // Create states list
-    // setListStates() {
-    //     let listStates: Array<string>[] = [];
-    //     // Active
-    //     listStates[0] = ['Active', '<span class="material-icons-outlined">arrow_circle_right</span>', 'green'];
-    //     // Pending
-    //     listStates[1] = ['Pending', '<span class="material-icons-outlined">pending</span>', 'yellow']
-    //     // Finished
-    //     listStates[2] = ['Finished', '<span class="material-icons-outlined">task_alt</span>', 'red']
-    //     // Discarded
-    //     listStates[3] = ['Discarded', '<span class="material-icons-outlined">highlight_off</span>', 'gray']
-    //     return listStates;
-    // }
-
     // Set ToDo state
-    setIconTodo(state: ToDoStates) {
-        const icon: string = state
-        if (icon == 'Active') {
+    setIconTodo(state: string): string {
+        if (state == 'Active') {
             return this.listStates[0][state]
         }
-        else if (icon == 'Pending') {
+        else if (state == 'Pending') {
             return this.listStates[1][state]
         }
-        else if (icon == 'Finished') {
+        else if (state == 'Finished') {
             return this.listStates[2][state]
         }
-        else if (icon == 'Discarded') {
+        else if (state == 'Discarded') {
             return this.listStates[3][state]
         } else {
             return "ICO-NO"
         }
     }
 
-    // // Set ToDo state
-    // setIconTodo(state: ToDoStates) {
-    //     const icon: string = state
-    //     if (icon == this.listStates[0][0]) {
-    //         return this.listStates[0][1]
-    //     }
-    //     else if (icon == this.listStates[1][0]) {
-    //         return this.listStates[1][1]
-    //     }
-    //     else if (icon == this.listStates[2][0]) {
-    //         return this.listStates[2][1]
-    //     }
-    //     else if (icon == this.listStates[3][0]) {
-    //         return this.listStates[3][1]
-    //     } else {
-    //         return "ICO-NO"
-    //     }
-    // }
-
     // Set ToDo color
-    setColorTodo(state: ToDoStates) {
-        const color: string = state
-        if (color == "Active") {
+    setColorTodo(state: string): string {
+        if (state == "Active") {
             return this.listStates[0]['color']
         }
-        else if (color == "Pending") {
+        else if (state == "Pending") {
             return this.listStates[1]['color']
         }
-        else if (color == "Finished") {
+        else if (state == "Finished") {
             return this.listStates[2]['color']
         }
-        else if (color == "Discarded") {
+        else if (state == "Discarded") {
             return this.listStates[3]['color']
         } else {
             return "blue"
         }
     }
-
-    // // Set ToDo color
-    // setColorTodo(state: ToDoStates) {
-    //     const color: string = state
-    //     if (color == "Active") {
-    //         return this.listStates[0][2]
-    //     }
-    //     else if (color == "Pending") {
-    //         return this.listStates[1][2]
-    //     }
-    //     else if (color == "Finished") {
-    //         return this.listStates[2][2]
-    //     }
-    //     else if (color == "Discarded") {
-    //         return this.listStates[3][2]
-    //     } else {
-    //         return "blue"
-    //     }
-    // }
 }

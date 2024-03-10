@@ -198,52 +198,9 @@ if (createToDoForm && createToDoForm instanceof HTMLFormElement) {
             state: formData.get("state") as ToDoStates,
         };
         try {
-            // console.log(createToDoData.content)
-            // console.log(createToDoData.todoDate.toLocaleDateString())
-            // console.log("CONSOLE CUANDO ENVIAMOS EL FORMULARIO")
-            // console.log(createToDoData.content.length)
-            // console.log(createToDoData.todoDate)
-
             const toDo = projectsManager.newToDo(createToDoData) as ToDo;
-
-            // console.log(toDo.state)
-            // console.log(toDo.listStates)
-            // console.log(toDo.listStates[1][0])
-            // console.log(toDo.listStates[1][1])
-            // console.log(toDo.listStates[1][2])
-            // console.log(toDo.color)
-            // console.log(toDo.icon)
-
             createToDoForm.reset();
             closeModal("create-todo-modal");
-            
-            //Edit ToDo
-            
-
-            //const todoEdit = projectsManager.getProjectSelected() as Project
-            // const toDoS = todoEdit.toDoList
-            
-            
-            // if (projectsManager.list.length != 0) {
-            //     const toDoS = todoEdit.toDoList
-            //     for (let i=0;i < todoEdit.toDoList.length;i++){
-            //         toDoS[i].ui.addEventListener("click", () => {
-            //             // console.log(toDoS[i].color)
-            //             // console.log(toDoS[i])
-            //             // console.log(toDoS[i].id)
-            //             // console.log(toDoS[i].ui.id)
-                        
-            //             showModal("edit-todo-modal")
-            //             // projectsManager.editToDo()
-            //             projectsManager.getToDoSelected()
-            //             console.log(todoEdit.toDoList)
-            //         })
-            //     }
-            // } else {
-            //     console.log("There is an error")
-            // }
-
-
         } catch (err) {
             const messageError: HTMLDialogElement = document.getElementById("popup-error") as HTMLDialogElement;
             const textError: HTMLParagraphElement = document.getElementById("text-error") as HTMLParagraphElement;
@@ -262,67 +219,67 @@ cancelCreateToDoBtn?.addEventListener("click", () => {
     toggleModal("create-todo-modal")
 })
 
-
-
 // Edit ToDo
-const todoEdit = projectsManager.getProjectSelected() as Project
-//const todoList = document.getElementById("todo-list")
-const todoList = document.querySelectorAll("#todo-list .todo-cards")
-if(todoList){
-    // Está funcionando para las TODO creadas pero no para las importadas?!?!
-    todoList.forEach((toDoCard) => {
-        toDoCard.addEventListener('click', () => {
-            // Select ToDo's ID
-            console.log(toDoCard.id);
-            console.log(toDoCard);
-        });
-    })}
+const toDoList = document.getElementById("todo-list") as HTMLDivElement
+if(!toDoList){console.warn("ToDo List not found")}
+toDoList.addEventListener('click', () => {
+    projectsManager.getDataEditToDo()
+    showModal("edit-todo-modal")
+});
 
-// if(todoList){
-//     todoList.addEventListener("click", () => {
-//         projectsManager.getToDoSelected()
-//         console.log(todoList)
-//     })
-// }
+// Form to edit ToDo
+const editToDoForm = document.getElementById("edit-todo-form") as HTMLFormElement;
+if (editToDoForm && editToDoForm instanceof HTMLFormElement) {
+    editToDoForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const formData = new FormData(editToDoForm);
+        const editToDoData = {
+            content: formData.get("content") as string,
+            todoDate: new Date(formData.get("todoDate") as string),
+            state: formData.get("state") as ToDoStates,
+        };
+        try {
+            const toDo = projectsManager.editToDo(editToDoData);
+            editToDoForm.reset();
+            closeModal("edit-todo-modal");
+        } catch (err) {
+            const messageError: HTMLDialogElement = document.getElementById("popup-error") as HTMLDialogElement;
+            const textError: HTMLParagraphElement = document.getElementById("text-error") as HTMLParagraphElement;
+            textError.innerHTML = `${err}`
+            showModal("popup-error")
+            messageError.addEventListener('click', () => messageError.close());
+        }
+    });
+} else {
+    console.warn("The ToDo form was not found. Check the ID!");
+}
+// Cancel button form edit ToDo
+const cancelEditTodoBtn = document.getElementById("cancel-todo-btn")
+cancelEditTodoBtn?.addEventListener("click", () => {
+    editToDoForm.reset();
+    toggleModal("edit-todo-modal")
+})
 
-
-
-// if (projectsManager.list.length != 0 && todoEdit) {
-//     const toDoS = todoEdit.toDoList
-//     let toDoCurrent: any;
-//     for (let i=0;i < todoEdit.toDoList.length;i++){
-//         toDoS[i].ui.addEventListener("click", () => {
-//             console.log(toDoS[i].color)
-//             console.log(toDoS[i])
-//             toDoCurrent = toDoS[i]
-//             return toDoCurrent
-//         })
-//     }
-// } else {
-//     console.log("TODO NO EXISTE")
-// }
-// function choiceToDo() {
-//     const toDoList = document.getElementById("todo-list") as HTMLDivElement
-//     const toDosUI = document.querySelectorAll(".todo-class")
-//     if (toDoList && toDoList instanceof HTMLDivElement) {
-//         toDosUI.forEach((toDoCard) => {
-//             toDoCard.addEventListener('click', () => {
-//                 // Aquí puedes realizar acciones específicas para cada elemento hijo
-//                 try {
-//                     console.log(toDoCard.id);
-//                 }
-//                 catch (e) {
-//                     console.log(e)
-//                 }
-//             });
-//         });
-//     }
-//     return toDoList
-// }
-
-
-
-
+// Delete ToDo
+const deleteToDoBtn = document.getElementById("delete-todo-btn")
+deleteToDoBtn?.addEventListener("click", () => {
+    const textError: HTMLParagraphElement = document.getElementById("text-choice") as HTMLParagraphElement;
+    showModal("popup-choice")
+    textError.innerText = "Are you sure you want to\ndelete the ToDo?"
+    confirmFormBtn?.addEventListener("click", () => {
+        projectsManager.deleteToDoSelected()
+        closeModal("popup-choice")
+        closeModal("edit-todo-modal")
+        // const projectsPage = document.getElementById("projects-page")
+        // const detailsPage = document.getElementById("project-details")
+        // if (!projectsPage || !detailsPage) {return}
+        // projectsPage.style.display = "flex"
+        // detailsPage.style.display = "none"
+    })
+    cancelFormBtn?.addEventListener("click", () => {
+        closeModal("popup-choice")
+    })
+})
 
 // Export project button
 const exportProjectBtn = document.getElementById("export-projects-btn")
