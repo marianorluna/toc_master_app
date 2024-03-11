@@ -36,13 +36,53 @@ function toggleModal(id: string) {
     }
 }
 
+// CSS Grid with JavaScript
+const screen = {
+    small: 0,
+    medium: 768,
+    large: 1024
+};
+// Observe window resize
+window.addEventListener('resize', resizeHandler);
+// Initial call
+// resizeHandler();
+// Calculate size
+function resizeHandler() {
+    // get window width
+    const iw = window.innerWidth;
+    // determine named size
+    let size: any;
+    for (let s in screen) {
+        if (iw >= screen[s]) size = s;
+    }
+    if (size === 'small') {
+        document.body.style.gridTemplateAreas = '"sidebar" "content" "header"';
+        header.style.display = "none"
+    }
+    else if (size === 'medium') {
+        document.body.style.gridTemplateAreas = '"sidebar header" "sidebar content"';
+        header.style.display = "flex"
+    }
+    //console.log(size);
+}
+
 // Start page
-const startPage = document.getElementById("start-page");
+const startPage = document.getElementById("start-page")
 const startImg = document.getElementById("img-start")
 const sidebar = document.getElementById("sidebar")
 const main = document.getElementById("content")
-if (sidebar && main && startImg && startPage) {
+const header = document.getElementById("main-header") as HTMLElement
+const dropdownMenu = document.getElementById("dropdown-menu")
+if (sidebar && main && startImg && startPage && header && dropdownMenu) {
     startImg.addEventListener("click", () => {
+        resizeHandler()
+        dropdownMenu.style.display = "flex"
+        if(window.innerWidth < 768) {
+            header.style.display = "none"
+        } else {
+            header.style.display = "flex"
+        }
+        
         document.body.style.display = "grid"
         sidebar.style.display = "flex"
         main.style.display = "grid"
@@ -52,17 +92,17 @@ if (sidebar && main && startImg && startPage) {
 
 // Create project
 const newProjectBtn = document.getElementById("new-project-btn");
-if (newProjectBtn) {
-    // Esta función tiene dos argumentos
-    // Un evento que tiene que "leer" y una función para realizar
-    newProjectBtn.addEventListener("click", () =>
-        showModal("new-project-modal")
-    );
-} else {
-    console.warn("New projects button was not found");
-    // Podemos ver información por consola, para detectar errores
-    console.log("New project btn value: ", newProjectBtn);
-}
+    if (newProjectBtn) {
+        // Esta función tiene dos argumentos
+        // Un evento que tiene que "leer" y una función para realizar
+        newProjectBtn.addEventListener("click", () =>
+            showModal("new-project-modal")
+        );
+    } else {
+        console.warn("New projects button was not found");
+        // Podemos ver información por consola, para detectar errores
+        console.log("New project btn value: ", newProjectBtn);
+    }
 // Form to create new project
 const projectForm = document.getElementById("new-project-form") as HTMLFormElement;
 if (projectForm && projectForm instanceof HTMLFormElement) {
@@ -270,11 +310,6 @@ deleteToDoBtn?.addEventListener("click", () => {
         projectsManager.deleteToDoSelected()
         closeModal("popup-choice")
         closeModal("edit-todo-modal")
-        // const projectsPage = document.getElementById("projects-page")
-        // const detailsPage = document.getElementById("project-details")
-        // if (!projectsPage || !detailsPage) {return}
-        // projectsPage.style.display = "flex"
-        // detailsPage.style.display = "none"
     })
     cancelFormBtn?.addEventListener("click", () => {
         closeModal("popup-choice")
@@ -302,3 +337,40 @@ const errorPopupBtn = document.getElementById("error-popup-btn")
 errorPopupBtn?.addEventListener("click", () => {
     closeModal("popup-error")
 })
+
+
+// Dropdown menu
+// selector
+const menuHamb = document.querySelector('.hamburger') as HTMLElement;
+const menuList = document.querySelector('.menuppal') as HTMLElement; 
+// method
+function toggleMenu (event) {
+    this.classList.toggle('is-active');
+    document.querySelector( ".menuppal" )?.classList.toggle("is_active")
+    event.preventDefault();
+}
+// event
+menuHamb.addEventListener('click', toggleMenu, false);
+
+// Menu options 1, 2 and 3
+const menuOp1 = document.getElementById("menu-op1") as HTMLElement
+const menuOp2 = document.getElementById("menu-op2") as HTMLElement
+const menuOp3 = document.getElementById("menu-op3") as HTMLElement
+menuOp1.onclick = functionCreateProjects
+function functionCreateProjects(event: Event){
+    menuHamb.click()
+    showModal("new-project-modal")
+}
+menuOp2.onclick = functionImportProjects
+function functionImportProjects(event: Event){
+    menuHamb.click()
+    projectsManager.importFromJSON()
+}
+menuOp3.onclick = functionExportProjects
+function functionExportProjects(event: Event){
+    menuHamb.click()
+    projectsManager.exportToJSON()
+}
+
+// IFC Simple Viewer
+const container = document.getElementById('viewer-container') as HTMLElement;

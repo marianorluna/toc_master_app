@@ -26,60 +26,9 @@ export class ToDo implements IToDo {
         this.content = data.content;
         this.todoDate = data.todoDate;
         this.state = data.state;
-        
         this.listStates = this.setListStates()
-        // this.listStates = setListStates()
-        // function setListStates() {
-        //     let listStates: Object[] = [];
-        //     // Active
-        //     listStates[0] = {'Active': '<span class="material-icons-outlined">arrow_circle_right</span>', 'color': 'green'};
-        //     // Pending
-        //     listStates[1] = {'Pending': '<span class="material-icons-outlined">pending</span>', 'color': 'yellow'};
-        //     // Finished
-        //     listStates[2] = {'Finished': '<span class="material-icons-outlined">task_alt</span>', 'color': 'red'};
-        //     // Discarded
-        //     listStates[3] = {'Discarded': '<span class="material-icons-outlined">highlight_off</span>', 'color': 'gray'};
-        //     return listStates;
-        // }
-
         this.icon = this.setIconTodo(this.state)
-        // this.icon = setIconToDo(this.state)
-        // function setIconToDo(state: string): string {
-        //     if (state == 'Active') {
-        //         return this.listStates[0][state]
-        //     }
-        //     else if (state == 'Pending') {
-        //         return this.listStates[1][state]
-        //     }
-        //     else if (state == 'Finished') {
-        //         return this.listStates[2][state]
-        //     }
-        //     else if (state == 'Discarded') {
-        //         return this.listStates[3][state]
-        //     } else {
-        //         return "ICO-NO"
-        //     }
-        // }
-        
         this.color = this.setColorTodo(this.state)
-        // this.color = setColorToDo(this.state)
-        // function setColorToDo(state: string): string {
-        //     if (state == "Active") {
-        //         return this.listStates[0]['color']
-        //     }
-        //     else if (state == "Pending") {
-        //         return this.listStates[1]['color']
-        //     }
-        //     else if (state == "Finished") {
-        //         return this.listStates[2]['color']
-        //     }
-        //     else if (state == "Discarded") {
-        //         return this.listStates[3]['color']
-        //     } else {
-        //         return "blue"
-        //     }
-        // }
-
         this.id = uuidv4();
         this.setUI();
     }
@@ -115,13 +64,13 @@ export class ToDo implements IToDo {
     setListStates() {
         let listStates: Object[] = [];
         // Active
-        listStates[0] = {'Active': '<span class="material-icons-outlined">arrow_circle_right</span>', 'color': 'green'};
+        listStates[0] = {'Active': '<span class="material-icons-outlined">arrow_circle_right</span>', 'color': '#ca8a3c'};
         // Pending
-        listStates[1] = {'Pending': '<span class="material-icons-outlined">pending</span>', 'color': 'yellow'}
+        listStates[1] = {'Pending': '<span class="material-icons-outlined">pending</span>', 'color': '#c4bd41'}
         // Finished
-        listStates[2] = {'Finished': '<span class="material-icons-outlined">task_alt</span>', 'color': 'red'}
+        listStates[2] = {'Finished': '<span class="material-icons-outlined">task_alt</span>', 'color': '#578c4b'}
         // Discarded
-        listStates[3] = {'Discarded': '<span class="material-icons-outlined">highlight_off</span>', 'color': 'gray'}
+        listStates[3] = {'Discarded': '<span class="material-icons-outlined">highlight_off</span>', 'color': '#6278b9'}
         return listStates;
     }
 

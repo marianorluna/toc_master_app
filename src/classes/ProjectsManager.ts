@@ -9,14 +9,14 @@ export class ProjectsManager {
     constructor(container: HTMLElement) {
         this.ui = container;
         // Esto lo habilitamos si queremos un ejemplo al iniciar
-        // this.newProject({
-        //     name: "BIM Proyect",
-        //     description: "This is just a default app project",
-        //     status: "Finished",
-        //     userRole: "Engineer",
-        //     startDate: new Date(),
-        //     finishDate: new Date(new Date().getTime() + 2.628e+9) // 30 days
-        // });
+        this.newProject({
+            name: "BIM Proyect",
+            description: "This is just a default app project",
+            status: "Finished",
+            userRole: "Engineer",
+            startDate: new Date(),
+            finishDate: new Date(new Date().getTime() + 2.628e+9) // 30 days
+        });
     }
 
     newProject(data: IProject) {
@@ -33,26 +33,24 @@ export class ProjectsManager {
         project.ui.addEventListener("click", () => {
             const projectsPage = document.getElementById("projects-page")
             const detailsPage = document.getElementById("project-details")
-            if (!projectsPage || !detailsPage) {return}
+            const header = document.getElementById("main-header")
+            const dropdownMenu = document.getElementById("dropdown-menu")
+            if (!projectsPage || !detailsPage || !header || !dropdownMenu) {return}
+            //dropdownMenu.style.display = "flex"
+            header.style.display = "none"
             projectsPage.style.display = "none"
             detailsPage.style.display = "flex"
+            document.body.style.gridTemplateAreas = '"sidebar content" "sidebar content"';
             this.setDetailsPage(project)
             
             // console.log("ESTE ES UN CLIC CUANDO SE ENTRA AL PROYECTO")
             
-            
-
             // Clean HTML ToDo's and add project's ToDo's
             let todoList = document.getElementById("todo-list") as HTMLDivElement
             todoList.innerHTML = ""
             todoList.appendChild(project.toDoUI)
 
-            
             // Select and edit ToDo nexto to create Project
-            // this.getToDoSelected().then(selected => {
-            //     console.log(selected);
-            // });
-            //this.editToDo()
             this.getToDoID()
         })
         // Agregar evento para mostrar página de proyectos
@@ -61,9 +59,15 @@ export class ProjectsManager {
             projectsButton.addEventListener("click", () => {
                 const projectsPage = document.getElementById("projects-page")
                 const detailsPage = document.getElementById("project-details")
-                if (!projectsPage || !detailsPage) {return}
+                const header = document.getElementById("main-header")
+                const dropdownMenu = document.getElementById("dropdown-menu")
+                if (!projectsPage || !detailsPage || !header || !dropdownMenu) {return}
+                document.body.style.gridTemplateAreas = '"sidebar header" "sidebar content"';
+                //dropdownMenu.style.display = "none"
+                header.style.display = "flex"
                 projectsPage.style.display = "flex"
                 detailsPage.style.display = "none"
+                
             })
         }
         this.ui.append(project.ui);
@@ -186,28 +190,6 @@ export class ProjectsManager {
         let progressEdit = document.getElementById("edit-form-progress") as HTMLInputElement
         if (progress.textContent) { progressEdit.value = progress.textContent.slice(0, -1) }
     }
-    
-    // newToDo(data: IToDo) {
-    //     const projectToDo = this.getProjectSelected() as Project
-    //     const projectUI = projectToDo.toDoUI as HTMLDivElement
-    //     const projectListToDo = projectToDo.toDoList
-        
-    //     // Create ToDo
-    //     if (data.content.length < 3) {
-    //         throw new Error(`The content of the ToDo must be a minimum of 3 characters.`)
-    //     }
-    //     if (data.todoDate.toDateString() == "Invalid Date") {
-    //         throw new Error(`You have not selected any dates yet.`)
-    //     }
-    //     const toDo = new ToDo(data)
-    //     projectListToDo.push(toDo)
-
-    //     for (let td = 0; td < projectListToDo.length; td++) {
-    //         projectUI.append(projectListToDo[td].ui)
-    //     }
-        
-    //     return toDo
-    // }
 
     newToDo(data: IToDo) {
         const projectToDo = this.getProjectSelected() as Project
@@ -244,11 +226,42 @@ export class ProjectsManager {
         thisToDo.content = data["content"]
         thisToDo.todoDate = data["todoDate"]
         thisToDo.state = data["state"]
-        console.log(thisToDo)
-        // console.log(thisToDo.setIconTodo(thisToDo.state))
-        // console.log(thisToDo.setColorTodo(thisToDo.state))
-        thisToDo.icon = thisToDo.setIconTodo(thisToDo.state)
-        thisToDo.color = thisToDo.setColorTodo(thisToDo.state)
+        // We make these changes this way because it takes the elements as objects and not as To-Do
+        thisToDo.icon = setIconToDo(thisToDo.state)
+        function setIconToDo(state: string): string {
+            if (state == 'Active') {
+                return '<span class="material-icons-outlined">arrow_circle_right</span>'
+            }
+            else if (state == 'Pending') {
+                return '<span class="material-icons-outlined">pending</span>'
+            }
+            else if (state == 'Finished') {
+                return '<span class="material-icons-outlined">task_alt</span>'
+            }
+            else if (state == 'Discarded') {
+                return '<span class="material-icons-outlined">highlight_off</span>'
+            } else {
+                return "ICO-NO"
+            }
+        }
+        thisToDo.color = setColorToDo(thisToDo.state)
+        function setColorToDo(state: string): string {
+            if (state == "Active") {
+                return '#ca8a3c'
+            }
+            else if (state == "Pending") {
+                return '#c4bd41'
+            }
+            else if (state == "Finished") {
+                return '#578c4b'
+            }
+            else if (state == "Discarded") {
+                return '#6278b9'
+            } else {
+                return '#ffffff'
+            }
+        }
+
         for(let i=0; i<projectToDo.toDoUI.children.length; i++) {
             if (projectToDo.toDoUI.children[i].id == thisToDo.id) {
                 projectToDo.toDoUI.children[i].innerHTML = ""
@@ -266,10 +279,7 @@ export class ProjectsManager {
                 </div>
                 `
             }
-        }
-
-        console.log(projectToDo.toDoList)
-        console.log(projectToDo.toDoUI)   
+        }  
         return thisToDo  
     }
 
@@ -431,11 +441,24 @@ export class ProjectsManager {
         if (!toDo) {
             return;
         }
+        
+        if(toDo instanceof ToDo) {
+            toDo.ui.remove();
+        } else {
+            console.log("No se ha encontrado el ToDo AHAHAHAHHA")
+        }
+
         toDo.ui.remove();
         const remaining = projectToDo.toDoList.filter((todo) => {
             return todo.id !== id;
         });
         projectToDo.toDoList = remaining;
+
+        for(let t in projectToDo.toDoUI.children) {
+            if (projectToDo.toDoUI.children[t].id == id) {
+                projectToDo.toDoUI.children[t].remove()
+            }
+        }
     }
 
     deleteToDoSelected() {
@@ -470,9 +493,6 @@ export class ProjectsManager {
         URL.revokeObjectURL(url)
     }
 
-    
-
-    // ESTO TAMPOCO FUNCIONA CORRECTAMENTE AUN
     importFromJSON() {
         const input = document.createElement('input')
         input.type = 'file'
@@ -480,14 +500,8 @@ export class ProjectsManager {
         const reader = new FileReader()
         reader.addEventListener("load", () => {
             const json = reader.result
-            
-            
-
             if (!json) { return }
             const projects: Project[] = JSON.parse(json as string)
-            console.log(projects[0])
-            // console.log(projects[0].getColor(projects[0].id))
-            console.log(typeof(projects[0]))
             for (const project of projects) {
                 try {
                     const readProject = this.newProject(project)
@@ -529,12 +543,9 @@ export class ProjectsManager {
                     </div>
                     `
                     readProject.toDoUI.innerHTML = ""
-
                     const toDoS: ToDo[] = readProject.toDoList
                     for (let t of toDoS) {
                         try {
-                            //t = this.newToDo(t)
-                            console.log(typeof(t))
                             t.ui = document.createElement("div")
                             t.ui.id = t.id
                             t.ui.className = "todo-class"
@@ -560,34 +571,6 @@ export class ProjectsManager {
                             console.log(error)
                         }
                     }
-                    // for (let t of readProject.toDoList as ToDo[]) {
-                    //     t.ui = document.createElement("div")
-                    //     t.ui.id = t.id
-                    //     t.ui.className = "todo-class"
-                    //     t.ui.style.display = "flex"
-                    //     t.ui.style.flexDirection = "column"
-                    //     t.ui.style.padding = "10px 30px"
-                    //     t.ui.style.rowGap = "20px"
-                    //     t.ui.innerHTML =
-                    //     `
-                    //     <div class="todo-item" style="background-color: ${t.color};">
-                    //         <div class="todo-item-1" style="display: flex; justify-content: space-between; align-items: center;">
-                    //             <div class="todo-item-2" style="display: flex; column-gap: 15px; align-items: center;">
-                    //                 ${t.icon}
-                    //                 <p class="todo-item-3" data-project-info="todoContent">${t.content}</p>
-                    //             </div>
-                    //             <p class="todo-item-2" data-project-info="todoDate" style="text-wrap: nowrap; margin-left: 10px;">${new Date(t.todoDate).toLocaleDateString()}</p>
-                    //             <div class="todo-item-2" data-project-info="todoState" style="display: none">${t.state}</div>
-                    //         </div>
-                    //     </div>
-                    //     `
-                    //     readProject.toDoUI.append(t.ui)
-                    //     //console.log(t.ui)
-                    // }
-
-                    // console.log(this.list)
-                    // console.log(readProject.toDoUI)
-                    console.log(readProject.toDoList)
                 } catch (error) {
                     console.log(error)
                 }
@@ -601,74 +584,6 @@ export class ProjectsManager {
         })
         input.click()
     }
-
-    // importFromJSON() {
-    //     const input = document.createElement('input');
-    //     input.type = 'file';
-    //     input.accept = 'application/json';
-
-    //     input.addEventListener('change', () => {
-    //         const filesList = input.files;
-    //         if (!filesList) { return }
-
-    //         const reader = new FileReader();
-    //         reader.readAsText(filesList[0]);
-
-    //         reader.addEventListener("load", () => {
-    //             const json = reader.result;
-    //             if (!json) { return }
-
-    //             const data = JSON.parse(json as string);
-    //             if (!Array.isArray(data)) {
-    //                 throw new Error("Invalid JSON format");
-    //             }
-
-    //             for (const projectData of data) {
-    //                 const project = this.newProject(projectData);
-    //                 this.list.push(project);
-
-    //                 for (const t of projectData.toDoList) {
-    //                     t
-    //                     // t.ui = document.createElement("div")
-    //                     // t.ui.id = t.id
-    //                     // t.ui.className = "todo-class"
-    //                     // t.ui.style.display = "flex"
-    //                     // t.ui.style.flexDirection = "column"
-    //                     // t.ui.style.padding = "10px 30px"
-    //                     // t.ui.style.rowGap = "20px"
-    //                     // t.ui.innerHTML =
-    //                     // `
-    //                     // <div class="todo-item" style="background-color: ${t.color};">
-    //                     //     <div style="display: flex; justify-content: space-between; align-items: center;">
-    //                     //         <div style="display: flex; column-gap: 15px; align-items: center;">
-    //                     //             ${t.icon}
-    //                     //             <p data-project-info="todoContent">${t.content}</p>
-    //                     //         </div>
-    //                     //         <p data-project-info="todoDate" style="text-wrap: nowrap; margin-left: 10px;">${new Date(t.todoDate).toLocaleDateString()}</p>
-    //                     //         <div data-project-info="todoState" style="display: none">${t.state}</div>
-    //                     //     </div>
-    //                     // </div>
-    //                     // `
-    //                     project.toDoUI.append(t.ui)
-                        
-    //                     // const todoProject = new ToDo(todoData)
-    //                     // projectData.toDoList = []
-    //                     // project.toDoList.push(todoProject)
-
-    //                     // const todo = this.newToDo(todoData);
-    //                     // project.toDoList.push(t);
-
-    //                     console.log(project.toDoUI)
-    //                     console.log(t);
-    //                     console.log(projectData.toDoList);
-    //                     // console.log(todo);
-    //                 }
-    //             }
-    //         });
-    //     });
-
-    //     input.click();
-    // }
 
     getDateStart(date: HTMLDivElement, project: Project) {
         let dateString: Date, dateObj: Date, dateStart: string, start: any
@@ -753,22 +668,4 @@ export class ProjectsManager {
             return dateString
         }
     }
-
-    // setColorTodo(state: string): string {
-    //     if (state == "Active") {
-    //         return this.listStates[0]['color']
-    //     }
-    //     else if (state == "Pending") {
-    //         return this.listStates[1]['color']
-    //     }
-    //     else if (state == "Finished") {
-    //         return this.listStates[2]['color']
-    //     }
-    //     else if (state == "Discarded") {
-    //         return this.listStates[3]['color']
-    //     } else {
-    //         return "blue"
-    //     }
-    // }
-
 }
