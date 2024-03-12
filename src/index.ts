@@ -56,10 +56,12 @@ function resizeHandler() {
         if (iw >= screen[s]) size = s;
     }
     if (size === 'small') {
+        document.body.style.gridTemplateColumns = '1fr';
         document.body.style.gridTemplateAreas = '"sidebar" "content" "header"';
         header.style.display = "none"
     }
     else if (size === 'medium') {
+        document.body.style.gridTemplateColumns = '300px 1fr';
         document.body.style.gridTemplateAreas = '"sidebar header" "sidebar content"';
         header.style.display = "flex"
     }
