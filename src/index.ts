@@ -71,12 +71,13 @@ function resizeHandler() {
 // Start page
 const startPage = document.getElementById("start-page")
 const startImg = document.getElementById("img-start")
+const startEnter = document.getElementById("start-enter")
 const sidebar = document.getElementById("sidebar")
 const main = document.getElementById("content")
 const header = document.getElementById("main-header") as HTMLElement
 const dropdownMenu = document.getElementById("dropdown-menu")
-if (sidebar && main && startImg && startPage && header && dropdownMenu) {
-    startImg.addEventListener("click", () => {
+if (sidebar && main && startEnter && startPage && header && dropdownMenu) {
+    startEnter.addEventListener("click", () => {
         resizeHandler()
         dropdownMenu.style.display = "flex"
         if(window.innerWidth < 768) {

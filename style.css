@@ -417,3 +417,26 @@ select:focus {
     height: 100%;
     border-radius: 10px;
 }
+
+/* Start Page */
+#start-enter {
+    padding: 2rem;
+    margin-top: 5rem;
+    cursor: pointer;
+    height: 3rem;
+    font-size: 2rem;
+    font-weight: 700;
+    background-color: var(--primary);
+    color: var(--background-200);
+    border-radius: 20px;
+    border: none;
+    display: flex;
+    align-items: center;
+    column-gap: 5px;
+    outline: 4px solid var(--primary-100);
+}
+
+#start-enter:hover {
+    background-color: var(--background-200);
+    color: var(--primary-400);
+}
