@@ -1,3 +1,4 @@
+import * as THREE from 'three';
 import { IProject, Project, ProjectStatus, UserRole } from "./classes/Project";
 import { ProjectsManager as PM } from "./classes/ProjectsManager";
 import { IToDo, ToDo, ToDoStates } from "./classes/ToDo";
@@ -376,4 +377,26 @@ function functionExportProjects(event: Event){
 }
 
 // IFC Simple Viewer
-const container = document.getElementById('viewer-container') as HTMLElement;
+// const container = document.getElementById('viewer-container') as HTMLElement;
+
+// const containerDimensions = viewerContainer.getBoundingClientRect()
+// const aspectRatio = containerDimensions.width / containerDimensions.height
+// const camera = new THREE.PerspectiveCamera(75, aspectRatio)
+// camera.position.z = 5
+// camera.position.x = 5
+// camera.position.y = 5
+
+// const renderer = new THREE.WebGLRenderer()
+// viewerContainer.append(renderer.domElement)
+// renderer.setSize(containerDimensions.width, containerDimensions.height)
+
+// const boxGeometry = new THREE.BoxGeometry()
+// const material = new THREE.MeshStandardMaterial()
+// const cube = new THREE.Mesh(boxGeometry, material)
+
+// const directionalLight = new THREE.DirectionalLight()
+// const ambientLight = new THREE.AmbientLight()
+
+// scene.add(cube, directionalLight, ambientLight)
+
+// renderer.render(scene, camera)

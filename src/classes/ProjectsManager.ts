@@ -1,5 +1,7 @@
 import { IProject, Project } from "./Project";
 import { IToDo, ToDo } from "./ToDo";
+import * as THREE from 'three';
+import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls'
 
 export class ProjectsManager {
     list: Project[] = [];
@@ -17,6 +19,7 @@ export class ProjectsManager {
             startDate: new Date(),
             finishDate: new Date(new Date().getTime() + 2.628e+9) // 30 days
         });
+        //project.ui.click()
     }
 
     newProject(data: IProject) {
@@ -44,6 +47,9 @@ export class ProjectsManager {
             this.setDetailsPage(project)
             
             // console.log("ESTE ES UN CLIC CUANDO SE ENTRA AL PROYECTO")
+
+            // Create canvas viewer
+            this.createViewer()
             
             // Clean HTML ToDo's and add project's ToDo's
             let todoList = document.getElementById("todo-list") as HTMLDivElement
@@ -667,5 +673,44 @@ export class ProjectsManager {
             dateString = "2000-01-01"
             return dateString
         }
+    }
+
+    createViewer() {
+        // ThreeJS Viewer
+        const viewerContainer = document.getElementById('viewer-container') as HTMLElement
+        const scene = new THREE.Scene()
+
+        //const containerDimensions = viewerContainer.getBoundingClientRect()
+        console.log(viewerContainer.clientWidth)
+        console.log(viewerContainer.clientHeight)
+        const aspectRatio = viewerContainer.clientWidth / viewerContainer.clientHeight
+        const camera = new THREE.PerspectiveCamera(75, aspectRatio)
+        camera.position.z = 5
+        // camera.position.x = 5
+        // camera.position.y = 5
+
+        const renderer = new THREE.WebGLRenderer()
+        renderer.setSize(viewerContainer.clientWidth, viewerContainer.clientHeight)
+        viewerContainer.append(renderer.domElement)
+
+
+        const boxGeometry = new THREE.BoxGeometry()
+        const material = new THREE.MeshStandardMaterial()
+        const cube = new THREE.Mesh(boxGeometry, material)
+
+        const directionalLight = new THREE.DirectionalLight()
+        const ambientLight = new THREE.AmbientLight()
+        ambientLight.intensity = 0.4
+
+        scene.add(cube, directionalLight, ambientLight)
+
+        const cameraControls = new OrbitControls(camera, viewerContainer)
+
+        function renderScene() {
+            renderer.render(scene, camera)
+            requestAnimationFrame(renderScene)
+        }
+
+        renderScene()
     }
 }
