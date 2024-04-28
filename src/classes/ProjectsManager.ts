@@ -1,10 +1,9 @@
+import * as THREE from 'three';
+import * as OBC from 'openbim-components';
+import { FragmentsGroup } from 'bim-fragment';
 import { IProject, Project } from "./Project";
 import { IToDo, ToDo } from "./ToDo";
-import * as THREE from 'three';
-import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls'
-import { GUI } from 'three/examples/jsm/libs/lil-gui.module.min'
-import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
-import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader'
+import { TodoCreator } from '../bim-components/TodoCreator';
 
 export class ProjectsManager {
     list: Project[] = [];
@@ -678,118 +677,219 @@ export class ProjectsManager {
         }
     }
 
-    createViewer() {
-        // ThreeJS Viewer
-        const viewerContainer = document.getElementById('viewer-container') as HTMLElement
-        const scene = new THREE.Scene()
-        
-        const camera = new THREE.PerspectiveCamera(75)
-        camera.position.z = 8
-        camera.position.x = 4
-        camera.position.y = 18
+    async createViewer() {
+        // OBC IFC.JS
+        const viewer = new OBC.Components()
 
-        const renderer = new THREE.WebGLRenderer({alpha: true, antialias: true})
-        viewerContainer.append(renderer.domElement)
+        // Add scene
+        const sceneComponent = new OBC.SimpleScene(viewer)
+        sceneComponent.setup()
+        viewer.scene = sceneComponent
+        const scene = sceneComponent.get()
+        scene.background = null
 
-        function resizeViewer() {
-            const containerDimensions = viewerContainer.getBoundingClientRect()
-            // console.log(viewerContainer.clientWidth)
-            // console.log(viewerContainer.clientHeight)
-            // console.log(containerDimensions.width)
-            // console.log(containerDimensions.height)
-            const aspectRatio = containerDimensions.width / containerDimensions.height
-            renderer.setSize(containerDimensions.width, containerDimensions.height)
-            // const aspectRatio = viewerContainer.clientWidth / viewerContainer.clientHeight
-            // renderer.setSize(viewerContainer.clientWidth, viewerContainer.clientHeight)
-            camera.aspect = aspectRatio
-            camera.updateProjectionMatrix()
+        // Renderer
+        const viewerContainer = document.getElementById('viewer-container') as HTMLDivElement
+        const rendererComponent = new OBC.PostproductionRenderer(viewer, viewerContainer)
+        viewer.renderer = rendererComponent
+
+        // Camera
+        const cameraComponent = new OBC.OrthoPerspectiveCamera(viewer)
+        viewer.camera = cameraComponent
+
+        const raycasterComponent = new OBC.SimpleRaycaster(viewer)
+        viewer.raycaster = raycasterComponent
+
+        // Aspect ratio and settings
+        viewer.init()
+        cameraComponent.updateAspect()
+        rendererComponent.postproduction.enabled = true
+
+        // Create and download fragments with properties (JSON)
+        const fragmentManager = new OBC.FragmentManager(viewer)
+        function exportFragments(model: FragmentsGroup) {
+            const fragmentBinary = fragmentManager.export(model)
+            const blob = new Blob([fragmentBinary])
+            const url = URL.createObjectURL(blob)
+            const a = document.createElement('a')
+            a.href = url
+            a.download = `${model.name.replace('.ifc', '')}.frag`
+            a.click()
+            URL.revokeObjectURL(url)
+            const json = JSON.stringify(model.properties, null, 2)
+            const propBlob = new Blob([json], { type: 'application/json' })
+            const propUrl = URL.createObjectURL(propBlob)
+            const propLink = document.createElement('a')
+            propLink.href = propUrl
+            propLink.download = `${model.name.replace('.ifc', '')}.json`
+            propLink.click()
+            URL.revokeObjectURL(propUrl)
         }
 
-        window.addEventListener("resize", resizeViewer)
-
-        resizeViewer()
-
-        const boxGeometry = new THREE.BoxGeometry()
-        const colorMain = new THREE.Color(0xa3cc52)
-        const material = new THREE.MeshStandardMaterial({color: colorMain})
-        const cube = new THREE.Mesh(boxGeometry, material)
-
-        const directionalLight = new THREE.DirectionalLight()
-        directionalLight.position.y = 2.5
-        directionalLight.position.x = 2
-        directionalLight.position.z = -2
-        
-        const ambientLight = new THREE.AmbientLight()
-        ambientLight.intensity = 0.4
-
-        scene.add(directionalLight, ambientLight)
-
-        const cameraControls = new OrbitControls(camera, viewerContainer)
-
-        function renderScene() {
-            renderer.render(scene, camera)
-            requestAnimationFrame(renderScene)
-        }
-
-        renderScene()
-
-        // Helpers
-        const axesHelper = new THREE.AxesHelper( 10 );
-        const size = 15;
-        const divisions = 15;
-        const gridHelper = new THREE.GridHelper( size, divisions );
-        gridHelper.material.transparent = true
-        gridHelper.material.opacity = 0.4
-        gridHelper.material.color = new THREE.Color("#808080")
-        scene.add(axesHelper, gridHelper)
-        
-        // Create GUI
-        const gui = new GUI()
-        gui.close()
-        gui.title("Scene Controls")
-
-        // Controls: Cube
-        const cubeControls = gui.addFolder("Initial Cube")
-        cubeControls.add(cube.position, "x", -10, 10, 1)
-        cubeControls.add(cube.position, "y", -10, 10, 1)
-        cubeControls.add(cube.position, "z", -10, 10, 1)
-        cubeControls.add(cube, "visible")
-        cubeControls.addColor(cube.material, "color")
-        
-        // Helper: Light
-        const helperLight = new THREE.DirectionalLightHelper( directionalLight, 0.5, 0xFFFFFF);
-        scene.add(helperLight)
-        
-        // Controls: Light
-        const directionalLightControls = gui.addFolder("Directional Light")
-        directionalLightControls.add(directionalLight.position, "x", -10, 10, 1)
-        directionalLightControls.add(directionalLight.position, "y", -10, 10, 1)
-        directionalLightControls.add(directionalLight.position, "z", -10, 10, 1)
-        directionalLightControls.add(directionalLight, "visible")
-        directionalLightControls.addColor(directionalLight, "color")
-        directionalLightControls.add(directionalLight, "intensity", 0, 2, 0.1)
-        
-        // Target Helper Light
-        function renderLight() {
-            directionalLight.target.position.x = 0
-            directionalLight.target.position.y = 0
-            directionalLight.target.position.z = 0
-            helperLight.update()
-            renderer.render(scene, camera)
-            requestAnimationFrame(renderLight)
-        }
-        renderLight()
-
-        // Load 3D
-        const objLoader = new OBJLoader()
-        const mtlLoader = new MTLLoader()
-
-        mtlLoader.load("../assets/Gear/Gear1.mtl", (materials) => {
-            materials.preload()
-            objLoader.setMaterials(materials)
-            objLoader.load("../assets/Gear/Gear1.obj", (mesh) => {
-                scene.add(mesh)
+        // JSON import function
+        function importFromJSON(model: FragmentsGroup) {
+            const input = document.createElement('input')
+            input.type = 'file'
+            input.accept = 'application/json'
+            const reader = new FileReader()
+            reader.addEventListener('load', () => {
+                const json = reader.result
+                if (!json) return
+                model.properties = JSON.parse(json as string)
+                onModelLoaded(model)
             })
+            input.addEventListener('change', () => {
+                const fileList = input.files
+                if (!fileList) return
+                const file = fileList[0]
+                reader.readAsText(file)
+            })
+            input.click()
+        }
+
+        // Add cube mesh
+        // const boxGeometry = new THREE.BoxGeometry()
+        // const colorMain = new THREE.Color(0xa3cc52)
+        // const material = new THREE.MeshStandardMaterial({color: colorMain})
+        // const cube = new THREE.Mesh(boxGeometry, material)
+        // scene.add(cube)
+
+        // Settings fragment component
+        const ifcloader = new OBC.FragmentIfcLoader(viewer)
+        ifcloader.settings.wasm = {
+            path: "https://unpkg.com/web-ifc@0.0.43/",
+            absolute: true
+        }
+
+        const highlighter = new OBC.FragmentHighlighter(viewer)
+        highlighter.setup()
+
+        // Properties
+        const propertiesProcessor = new OBC.IfcPropertiesProcessor(viewer)
+        highlighter.events.select.onClear.add(() => {
+            propertiesProcessor.cleanPropertiesList()
         })
+
+        // Classify fragments
+        const classifier = new OBC.FragmentClassifier(viewer)
+
+        // Create window to visualize the classifier
+        const classificationWindow = new OBC.FloatingWindow(viewer)
+        classificationWindow.visible = false
+        viewer.ui.add(classificationWindow)
+        classificationWindow.title = 'Model Groups'
+
+        // Show or hide window
+        const classificationBtn = new OBC.Button(viewer)
+        classificationBtn.materialIcon = 'account_tree'
+        classificationBtn.onClick.add(() => {
+            classificationWindow.visible = !classificationWindow.visible
+            classificationWindow.active = classificationWindow.visible
+        })
+
+        async function createModelTree() {
+            const fragmentTree = new OBC.FragmentTree(viewer)
+            await fragmentTree.init()
+            await fragmentTree.update(['model', 'entities', 'storeys'])
+            // Code to select elements
+            fragmentTree.onHovered.add((fragmentMap) => {
+                highlighter.highlightByID('hover', fragmentMap)
+            })
+            fragmentTree.onSelected.add((fragmentMap) => {
+                highlighter.highlightByID('selected', fragmentMap)
+            })
+            const tree = fragmentTree.get().uiElement.get('tree')
+            return tree
+        }
+
+        // Create culler before the uploading callbacks
+        const culler = new OBC.ScreenCuller(viewer)
+        // Catch event when the camera has stopped moving
+        cameraComponent.controls.addEventListener('sleep', () => {
+            culler.needsUpdate = true
+        })
+
+        // Create function to load fragments
+        async function onModelLoaded(model: FragmentsGroup) {
+            highlighter.update()
+            // Add a culler
+            for (const fragment of model.items) {
+                culler.add(fragment.mesh)
+            }
+            culler.needsUpdate = true
+
+            // Load an Object with model properties
+            try {
+                // console.log(model)
+                classifier.byStorey(model)
+                classifier.byEntity(model)
+                classifier.byModel(model.name, model)
+                // console.log(classifier.get())
+                const tree = await createModelTree()
+                await classificationWindow.slots.content.dispose(true) // all the trees in one
+                classificationWindow.addChild(tree)
+                // Create index map of the model
+                propertiesProcessor.process(model)
+                highlighter.events.select.onHighlight.add((fragmentMap) => {
+                    const expressID = [... Object.values(fragmentMap)[0]][0]
+                    propertiesProcessor.renderProperties(model, Number(expressID))
+                })
+            } catch (error) {
+                alert(error)
+            }
+        }
+
+        // Add an event to interact with the ifc or frag model
+        ifcloader.onIfcLoaded.add(async (model) => {
+            // Export fragment file with extension 'frag'
+            exportFragments(model)
+            onModelLoaded(model)
+        })
+        fragmentManager.onFragmentsLoaded.add((model) => {
+            importFromJSON(model) //Get this from a JSON file exported from the IFC first load!
+            if (!fragmentManager.baseCoordinationModel) {
+                fragmentManager.baseCoordinationModel = fragmentManager.groups[0].uuid
+            }
+            //onModelLoaded(model)
+        })
+
+        // Create button to import fragments
+        const importFragmentBtn = new OBC.Button(viewer)
+        importFragmentBtn.materialIcon = 'upload'
+        importFragmentBtn.tooltip = 'Load FRAG'
+        importFragmentBtn.onClick.add(() => {
+            const input = document.createElement('input')
+            input.type = 'file'
+            input.accept = '.frag'
+            const reader = new FileReader()
+            reader.addEventListener('load', async () => {
+                const binary = reader.result
+                if (!(binary instanceof ArrayBuffer)) { return }
+                const fragmentBinary = new Uint8Array(binary)
+                await fragmentManager.load(fragmentBinary)
+            })
+            input.addEventListener('change', () => {
+                const filesList = input.files
+                if (!filesList) { return }
+                reader.readAsArrayBuffer(filesList[0])
+            })
+            input.click()
+        })
+
+        // Create instance of ToDoCreator tool
+        const todoCreator = new TodoCreator(viewer)
+        await todoCreator.setup()
+
+        // Toolbar and add IFC file and buttons
+        const toolbar = new OBC.Toolbar(viewer)
+        toolbar.addChild(
+            ifcloader.uiElement.get('main'),
+            importFragmentBtn,
+            classificationBtn,
+            propertiesProcessor.uiElement.get('main'),
+            fragmentManager.uiElement.get('main'),
+            todoCreator.uiElement.get('activationButton')
+        )
+        viewer.ui.addToolbar(toolbar)
     }
 }

@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { IProject, Project, ProjectStatus, UserRole } from "./classes/Project";
 import { ProjectsManager as PM } from "./classes/ProjectsManager";
 import { IToDo, ToDo, ToDoStates } from "./classes/ToDo";
+import { TodoCreator } from './bim-components/TodoCreator';
 
 // Default project
 const projectsListUI = document.getElementById("projects-list") as HTMLElement;
@@ -62,7 +63,7 @@ function resizeHandler() {
         header.style.display = "none"
     }
     else if (size === 'medium') {
-        document.body.style.gridTemplateColumns = '300px 1fr';
+        document.body.style.gridTemplateColumns = '20rem 1fr';
         document.body.style.gridTemplateAreas = '"sidebar header" "sidebar content"';
         header.style.display = "flex"
     }

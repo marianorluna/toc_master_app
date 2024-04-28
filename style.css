@@ -40,7 +40,7 @@ html, body {
 
 body {
     display: flex;
-    grid-template-columns: 300px 1fr;
+    grid-template-columns: 0.25fr 1fr;
     grid-template-rows: 100px 1fr;
     grid-template-areas: 
         "sidebar header"
