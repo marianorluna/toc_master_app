@@ -1,4 +1,3 @@
-import * as THREE from 'three';
 import { IProject, Project, ProjectStatus, UserRole } from "./classes/Project";
 import { ProjectsManager as PM } from "./classes/ProjectsManager";
 import { IToDo, ToDo, ToDoStates } from "./classes/ToDo";
@@ -38,37 +37,37 @@ function toggleModal(id: string) {
     }
 }
 
-// CSS Grid with JavaScript
-const screen = {
-    small: 0,
-    medium: 768,
-    large: 1024
-};
-// Observe window resize
-window.addEventListener('resize', resizeHandler);
-// Initial call
-// resizeHandler();
-// Calculate size
-function resizeHandler() {
-    // get window width
-    const iw = window.innerWidth;
-    // determine named size
-    let size: any;
-    for (let s in screen) {
-        if (iw >= screen[s]) size = s;
-    }
-    if (size === 'small') {
-        document.body.style.gridTemplateColumns = '1fr';
-        document.body.style.gridTemplateAreas = '"sidebar" "content" "header"';
-        header.style.display = "none"
-    }
-    else if (size === 'medium') {
-        document.body.style.gridTemplateColumns = '20rem 1fr';
-        document.body.style.gridTemplateAreas = '"sidebar header" "sidebar content"';
-        header.style.display = "flex"
-    }
-    //console.log(size);
-}
+// // CSS Grid with JavaScript
+// const screen = {
+//     small: 0,
+//     medium: 768,
+//     large: 1024
+// };
+// // Observe window resize
+// window.addEventListener('resize', resizeHandler);
+// // Initial call
+// // resizeHandler();
+// // Calculate size
+// function resizeHandler() {
+//     // get window width
+//     const iw = window.innerWidth;
+//     // determine named size
+//     let size: any;
+//     for (let s in screen) {
+//         if (iw >= screen[s]) size = s;
+//     }
+//     if (size === 'small') {
+//         document.body.style.gridTemplateAreas = '"sidebar" "content"';
+//         document.body.style.gridTemplateColumns = '1fr';
+//         header.style.display = "none"
+//     }
+//     else if (size === 'medium') {
+//         document.body.style.gridTemplateColumns = '20rem 1fr';
+//         document.body.style.gridTemplateAreas = '"sidebar header" "sidebar content"';
+//         header.style.display = "flex"
+//     }
+//     console.log(size);
+// }
 
 // Start page
 const startPage = document.getElementById("start-page")
@@ -80,7 +79,7 @@ const header = document.getElementById("main-header") as HTMLElement
 const dropdownMenu = document.getElementById("dropdown-menu")
 if (sidebar && main && startEnter && startPage && header && dropdownMenu) {
     startEnter.addEventListener("click", () => {
-        resizeHandler()
+        //resizeHandler()
         dropdownMenu.style.display = "flex"
         if(window.innerWidth < 768) {
             header.style.display = "none"
@@ -343,7 +342,6 @@ errorPopupBtn?.addEventListener("click", () => {
     closeModal("popup-error")
 })
 
-
 // Dropdown menu
 // selector
 const menuHamb = document.querySelector('.hamburger') as HTMLElement;
@@ -376,28 +374,3 @@ function functionExportProjects(event: Event){
     menuHamb.click()
     projectsManager.exportToJSON()
 }
-
-// IFC Simple Viewer
-// const container = document.getElementById('viewer-container') as HTMLElement;
-
-// const containerDimensions = viewerContainer.getBoundingClientRect()
-// const aspectRatio = containerDimensions.width / containerDimensions.height
-// const camera = new THREE.PerspectiveCamera(75, aspectRatio)
-// camera.position.z = 5
-// camera.position.x = 5
-// camera.position.y = 5
-
-// const renderer = new THREE.WebGLRenderer()
-// viewerContainer.append(renderer.domElement)
-// renderer.setSize(containerDimensions.width, containerDimensions.height)
-
-// const boxGeometry = new THREE.BoxGeometry()
-// const material = new THREE.MeshStandardMaterial()
-// const cube = new THREE.Mesh(boxGeometry, material)
-
-// const directionalLight = new THREE.DirectionalLight()
-// const ambientLight = new THREE.AmbientLight()
-
-// scene.add(cube, directionalLight, ambientLight)
-
-// renderer.render(scene, camera)

@@ -247,6 +247,8 @@ dialog {
     background-color: transparent;
     border: none;
     margin: auto;
+    overflow: auto;
+    overscroll-behavior: contain;
 }
 
 dialog::backdrop {
@@ -319,8 +321,7 @@ select:focus {
 /* Model viewer */
 #viewer-container {
     min-width: 100%;
-    height: 500px;
-    /* background-color: red; */
+    min-height: 100%;
     border-radius: 10px;
     /* padding: 10px; */
     /* grid-area: viewer; */
@@ -347,9 +348,21 @@ select:focus {
     text-align: center;
 }
 
-.btn-secondary:hover {
+.btn-secondary:hover, .btn-special:hover {
     background-color: var(--primary);
     outline: none;
+}
+
+.btn-special {
+    background-color: transparent;
+    outline: 2px solid #969696;
+    text-align: center;
+}
+
+#win-all-btn, #win-out-btn {
+    position: absolute;
+    right: 10px;
+    top: 10px;
 }
 
 #todo-list {

@@ -4,6 +4,7 @@ import { FragmentsGroup } from 'bim-fragment';
 import { IProject, Project } from "./Project";
 import { IToDo, ToDo } from "./ToDo";
 import { TodoCreator } from '../bim-components/TodoCreator';
+import { SimpleQto } from '../bim-components/SimpleQto';
 
 export class ProjectsManager {
     list: Project[] = [];
@@ -40,12 +41,19 @@ export class ProjectsManager {
             const detailsPage = document.getElementById("project-details")
             const header = document.getElementById("main-header")
             const dropdownMenu = document.getElementById("dropdown-menu")
-            if (!projectsPage || !detailsPage || !header || !dropdownMenu) {return}
+            const viewerContainer = document.getElementById("viewer-container")
+            const heightWindow = window.innerHeight
+            if (!projectsPage || !detailsPage || !header || !dropdownMenu || !viewerContainer) {return}
             //dropdownMenu.style.display = "flex"
             header.style.display = "none"
             projectsPage.style.display = "none"
             detailsPage.style.display = "flex"
-            document.body.style.gridTemplateAreas = '"sidebar content" "sidebar content"';
+            if (window.innerWidth < 768) {
+                document.body.style.gridTemplateAreas = '"header" "content"';
+            } else {
+                document.body.style.gridTemplateAreas = '"sidebar content" "sidebar content"';
+                viewerContainer.style.maxHeight = `${heightWindow-250}px`;
+            }
             this.setDetailsPage(project)
             
             // console.log("ESTE ES UN CLIC CUANDO SE ENTRA AL PROYECTO")
@@ -70,12 +78,15 @@ export class ProjectsManager {
                 const header = document.getElementById("main-header")
                 const dropdownMenu = document.getElementById("dropdown-menu")
                 if (!projectsPage || !detailsPage || !header || !dropdownMenu) {return}
-                document.body.style.gridTemplateAreas = '"sidebar header" "sidebar content"';
                 //dropdownMenu.style.display = "none"
                 header.style.display = "flex"
                 projectsPage.style.display = "flex"
                 detailsPage.style.display = "none"
-                
+                if (window.innerWidth < 768) {
+                    document.body.style.gridTemplateAreas = '"header" "content"';
+                } else {
+                    document.body.style.gridTemplateAreas = '"sidebar header" "sidebar content"';
+                }
             })
         }
         this.ui.append(project.ui);
@@ -692,6 +703,8 @@ export class ProjectsManager {
         const viewerContainer = document.getElementById('viewer-container') as HTMLDivElement
         const rendererComponent = new OBC.PostproductionRenderer(viewer, viewerContainer)
         viewer.renderer = rendererComponent
+        // const renderer = rendererComponent.get() as THREE.WebGLRendererParameters
+        // renderer.antialias = true
 
         // Camera
         const cameraComponent = new OBC.OrthoPerspectiveCamera(viewer)
@@ -702,8 +715,61 @@ export class ProjectsManager {
 
         // Aspect ratio and settings
         viewer.init()
+        rendererComponent.resize()
         cameraComponent.updateAspect()
         rendererComponent.postproduction.enabled = true
+
+        // Create maximized button and dialog viewer
+        // Function to disable escape key
+        function disableEscapeKey(event: KeyboardEvent) {
+            if (event.key === "Escape") {
+                event.preventDefault();
+            }
+        }
+        const observed = new ResizeObserver(() => {
+            rendererComponent.resize()
+            cameraComponent.updateAspect()
+        })
+        const maximizeBtn = document.getElementById("win-all-btn")
+        const minimizeBtn = document.getElementById("win-out-btn")
+        const dialogViewer = document.getElementById("viewer-dialog") as HTMLDialogElement
+        const detailsPage = document.getElementById("project-details") as HTMLDivElement
+        const viewerOriginal = detailsPage.querySelector(".main-page-content") as HTMLDivElement
+        
+        // Maximize viewer 3D
+        if (maximizeBtn && minimizeBtn && dialogViewer && detailsPage && viewerOriginal) {
+            maximizeBtn.addEventListener("click", () => {
+                
+                dialogViewer.style.width = window.innerWidth + "px"
+                dialogViewer.style.height = window.innerHeight + "px"
+                dialogViewer.appendChild(viewerContainer)
+                
+                observed.observe(viewerContainer)
+
+                dialogViewer.showModal()
+                maximizeBtn.hidden = true
+                minimizeBtn.hidden = false
+        
+                // Add event listener to disable escape key
+                document.addEventListener("keydown", disableEscapeKey);
+            });
+        } else {
+            console.warn("Error with maximize button");
+        }
+
+        // Minimize viewer 3D
+        if (maximizeBtn && minimizeBtn && viewerContainer && dialogViewer && detailsPage) {
+            minimizeBtn.addEventListener("click", () => {
+                viewerOriginal.appendChild(viewerContainer)
+                dialogViewer.close()
+                maximizeBtn.hidden = false
+                minimizeBtn.hidden = true
+
+                observed.observe(viewerContainer)
+            });
+        } else {
+            console.warn("Error with minimize button");
+        }
 
         // Create and download fragments with properties (JSON)
         const fragmentManager = new OBC.FragmentManager(viewer)
@@ -879,6 +945,20 @@ export class ProjectsManager {
         // Create instance of ToDoCreator tool
         const todoCreator = new TodoCreator(viewer)
         await todoCreator.setup()
+        todoCreator.onProjectCreated.add((todo) => {
+            console.log(todo)
+        })
+
+        // Create instance of SimpleQto tool
+        const simpleQto = new SimpleQto(viewer)
+        await simpleQto.setup()
+
+        // IFC Properties Finder
+        const propsFinder = new OBC.IfcPropertiesFinder(viewer)
+        await propsFinder.init()
+        propsFinder.onFound.add((fragmentIDMap) => {
+            highlighter.highlightByID('select', fragmentIDMap)
+        })
 
         // Toolbar and add IFC file and buttons
         const toolbar = new OBC.Toolbar(viewer)
@@ -887,9 +967,13 @@ export class ProjectsManager {
             importFragmentBtn,
             classificationBtn,
             propertiesProcessor.uiElement.get('main'),
+            propsFinder.uiElement.get('main'),
             fragmentManager.uiElement.get('main'),
-            todoCreator.uiElement.get('activationButton')
+            todoCreator.uiElement.get('activationButton'),
+            simpleQto.uiElement.get('activationButton')
         )
         viewer.ui.addToolbar(toolbar)
+
+        return viewer;
     }
 }
