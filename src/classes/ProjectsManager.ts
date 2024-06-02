@@ -749,6 +749,7 @@ export class ProjectsManager {
                 dialogViewer.showModal()
                 maximizeBtn.hidden = true
                 minimizeBtn.hidden = false
+                viewerContainer.style.width = "100%"
         
                 // Add event listener to disable escape key
                 document.addEventListener("keydown", disableEscapeKey);
@@ -764,6 +765,7 @@ export class ProjectsManager {
                 dialogViewer.close()
                 maximizeBtn.hidden = false
                 minimizeBtn.hidden = true
+                viewerContainer.style.width = "100vw"
 
                 observed.observe(viewerContainer)
             });
