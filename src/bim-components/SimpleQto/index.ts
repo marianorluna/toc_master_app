@@ -20,6 +20,7 @@ export class SimpleQto extends OBC.Component<QtoResult> implements OBC.UI, OBC.D
         this._components = components;
         components.tools.add(SimpleQto.uuid, this);
         this.setUI();
+        console.log(this.uiElement.get('qtoList').slots.content.domElement);
     }
 
     async setup() {
@@ -49,6 +50,22 @@ export class SimpleQto extends OBC.Component<QtoResult> implements OBC.UI, OBC.D
         qtoList.title = 'Quantification';
         this._components.ui.add(qtoList);
         qtoList.visible = false;
+        
+        // const contentDiv = new OBC.SimpleUIComponent(
+        //     this._components, 
+        //     `<div>
+        //         <details style="padding: 20px" open>
+        //             <summary>
+        //                 Qto_SlabBaseQuantities
+        //             </summary>
+        //             <p style="color: #808080; padding-left: 20px;">
+        //                 Perimeter: 124.66
+        //             </p>
+        //         </details>
+        //     </div>
+        //     `
+        // );
+        // qtoList.setSlot('content', contentDiv)
 
         activationButton.onClick.add(() => {
             activationButton.active = !activationButton.active;
@@ -62,24 +79,26 @@ export class SimpleQto extends OBC.Component<QtoResult> implements OBC.UI, OBC.D
     }
 
     // Challenge: Add a list of quantities to the floating window
-    createTree() {
-        const qtoList = this.uiElement.get('qtoList');
-        for (const key of Object.keys(this._qtoResult)) {
-            const query = new QtoQuery(this._components);
-            query.title = key;
-            query.domElement.style.padding = '5px 0';
-            query.domElement.style.fontSize = '20px';
-            qtoList.addChild(query);
-            for (const queryKey of Object.keys(this._qtoResult[key])) {
-                const detailElement = new OBC.SimpleUIComponent(this._components,
-                `<div>${queryKey}: ${this._qtoResult[key][queryKey]}</div>`
-                );
-                detailElement.domElement.style.padding = '0 10px';
-                detailElement.domElement.style.fontSize = '16px';
-                query.slots.details.addChild(detailElement);
-            }
-        }
-    }
+    
+    
+    // createTree() {
+    //     const qtoList = this.uiElement.get('qtoList');
+    //     for (const key of Object.keys(this._qtoResult)) {
+    //         const query = new QtoQuery(this._components);
+    //         query.title = key;
+    //         query.domElement.style.padding = '5px 0';
+    //         query.domElement.style.fontSize = '20px';
+    //         qtoList.addChild(query);
+    //         for (const queryKey of Object.keys(this._qtoResult[key])) {
+    //             const detailElement = new OBC.SimpleUIComponent(this._components,
+    //             `<div>${queryKey}: ${this._qtoResult[key][queryKey]}</div>`
+    //             );
+    //             detailElement.domElement.style.padding = '0 10px';
+    //             detailElement.domElement.style.fontSize = '16px';
+    //             query.slots.details.addChild(detailElement);
+    //         }
+    //     }
+    // }
 
     // Method for quantity takeoff
     async sumQuantities(fragmentIdMap: OBC.FragmentIdMap) {
@@ -108,18 +127,17 @@ export class SimpleQto extends OBC.Component<QtoResult> implements OBC.UI, OBC.D
                     const expressIDs = fragmentIdMap[fragmentID];
                     // Working IDs
                     const workingIDs = relatedIDs.filter(id => expressIDs.has(id.toString()));
-                    // console.log(properties[setID]);
-                    // console.log(fragmentIdMap[fragmentID])
-                    // console.log(relatedIDs.filter(id => expressIDs.has(id.toString())))
                     const { name: setName } = OBC.IfcPropertiesUtils.getEntityName(properties, setID); 
                     if (set.type !== WEBIFC.IFCELEMENTQUANTITY || workingIDs.length === 0 || !setName) { return; }
                     if (!(setName in this._qtoResult)) { this._qtoResult[setName] = {}; }
+                    
                     OBC.IfcPropertiesUtils.getQsetQuantities(
                         properties,
                         setID,
                         // Filter of fragments with name and nominal value
                         (qtoID) => {
-                            // console.log(properties[qtoID])
+                            
+                            //console.log(properties[qtoID])
                             const { name: qtoName} = OBC.IfcPropertiesUtils.getEntityName(properties, qtoID);
                             const { value } = OBC.IfcPropertiesUtils.getQuantityValue(properties, qtoID);
                             if (!qtoName || !value) { return; }
@@ -127,12 +145,38 @@ export class SimpleQto extends OBC.Component<QtoResult> implements OBC.UI, OBC.D
                             this._qtoResult[setName][qtoName] += value;
                         }
                     )
+                    
+                    // UI for the quantities
+                    const uiQto = document.createElement("div");
+                    uiQto.style.color = "#808080";
+                    uiQto.style.paddingLeft = "20px";
+                    const setQto = this._qtoResult[setName];
+                    // console.log(setQto);
+                    for (const qto in setQto) { 
+                        if (!(qto.includes('Calculated'))) { continue; }
+                        uiQto.innerHTML += `
+                            <p>${qto}: ${setQto[qto].toFixed(2)}</p>
+                        `;
+                        // console.log(`${qto}: ${setQto[qto].toFixed(2)}`);
+                    }
+                    const qtoList = this.uiElement.get('qtoList');
+                    const divUI = `
+                        <details style="padding: 20px" open>
+                            <summary>
+                                ${setName}
+                            </summary>
+                            <p style="color: #808080; padding-left: 20px;">
+                                ${uiQto.innerHTML}
+                            </p>
+                        </details>
+                    `;
+                    const contentDiv = new OBC.SimpleUIComponent(this._components, divUI);
+                    qtoList.setSlot('content', contentDiv);
                 }
             )
         }
         console.log(this._qtoResult);
-        console.timeEnd('Quantities V1');
-        this.createTree();
+        console.timeEnd('Quantities V1');   
     }
 
     // Method for quantity takeoff
