@@ -5,6 +5,7 @@ import { IProject, Project } from "./Project";
 import { IToDo, ToDo } from "./ToDo";
 import { TodoCreator } from '../bim-components/TodoCreator';
 import { SimpleQto } from '../bim-components/SimpleQto';
+import { Todo} from '../bim-components/Todo';
 
 export class ProjectsManager {
     list: Project[] = [];
@@ -765,9 +766,12 @@ export class ProjectsManager {
                 dialogViewer.close()
                 maximizeBtn.hidden = false
                 minimizeBtn.hidden = true
-                viewerContainer.style.width = "100vw"
+                
 
                 observed.observe(viewerContainer)
+                if (window.innerWidth < 768) {
+                    viewerContainer.style.width = "100vw"
+                }
             });
         } else {
             console.warn("Error with minimize button");
