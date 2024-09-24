@@ -20,7 +20,7 @@ export class SimpleQto extends OBC.Component<QtoResult> implements OBC.UI, OBC.D
         this._components = components;
         components.tools.add(SimpleQto.uuid, this);
         this.setUI();
-        console.log(this.uiElement.get('qtoList').slots.content.domElement);
+        // console.log(this.uiElement.get('qtoList').slots.content.domElement);
     }
 
     async setup() {
@@ -102,12 +102,13 @@ export class SimpleQto extends OBC.Component<QtoResult> implements OBC.UI, OBC.D
 
     // Method for quantity takeoff
     async sumQuantities(fragmentIdMap: OBC.FragmentIdMap) {
-        console.time('Quantities V1');
+        //console.time('Quantities V1');
         const fragmentManager = await this._components.tools.get(OBC.FragmentManager);
         for (const fragmentID in fragmentIdMap) {
             // Here are the fragments
             const fragment = fragmentManager.list[fragmentID];
-            console.log(fragment);
+            // console.log(fragment);
+            
             // Here are the models with their properties
             const model = fragment.mesh.parent
             if(!(model instanceof FragmentsGroup && model.properties)) {
@@ -175,13 +176,13 @@ export class SimpleQto extends OBC.Component<QtoResult> implements OBC.UI, OBC.D
                 }
             )
         }
-        console.log(this._qtoResult);
-        console.timeEnd('Quantities V1');   
+        // console.log(this._qtoResult);
+        // console.timeEnd('Quantities V1');   
     }
 
     // Method for quantity takeoff
     async sumQuantitiesV2(fragmentIdMap: OBC.FragmentIdMap) {
-        console.time("Quantities V2")
+        // console.time("Quantities V2")
         const fragmentManager = await this._components.tools.get(OBC.FragmentManager)
         const propertiesProcessor = await this._components.tools.get(OBC.IfcPropertiesProcessor)
         for (const fragmentID in fragmentIdMap) {
@@ -212,8 +213,8 @@ export class SimpleQto extends OBC.Component<QtoResult> implements OBC.UI, OBC.D
                 }
             )}
         }}
-        console.log(this._qtoResult)
-        console.timeEnd("Quantities V2")
+        // console.log(this._qtoResult)
+        // console.timeEnd("Quantities V2")
         //this.createTree();
     }
 

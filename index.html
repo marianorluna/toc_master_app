@@ -26,6 +26,8 @@
           <li id="menu-op1"><a href="#">Create Project</a></li>
           <li id="menu-op2"><a href="#">Import Projects</a></li>
           <li id="menu-op3"><a href="#">Export Projects</a></li>
+          <li><a href="#">---</a></li>
+          <li id="menu-op4"><a href="#">New User</a></li>
         </ul>
     </nav>
   </div>
@@ -47,16 +49,144 @@
       </button>
     </div>
   </header>
+  <!-- Users header -->
+  <header id="users-header">
+    <h2>Users Management</h2>
+    <div style="display: flex; align-items: center; column-gap: 15px;">
+      <button id="new-user-btn">
+        <span class="material-icons-round">add</span>
+        <p>New User</p>
+      </button>
+    </div>
+  </header>
     <!-- Sidebar -->
   <aside id="sidebar">
     <img id="company-logo" src="./assets/company-logo.svg" alt="Construction Company" onclick="window.location.reload()"/>
     <ul id="nav-buttons">
       <li id="projects-btn"><span class="material-icons-round">apartment</span>Projects</li>
-      <li><span class="material-icons-round">people</span>Users</li>
+      <li id="users-btn"><span class="material-icons-round">people</span>Users</li>
     </ul>
   </aside>
   <!-- Main content -->
   <main id="content">
+    <!-- Users page -->
+    <div class="page" id="users-page">
+
+      <div class="todo-item">
+        <div class="users-1">
+          <div class="users-2">
+            <span class="material-icons-round">
+              account_box
+            </span>
+          </div>
+          <div>
+            <p>César Pelli</p>
+            <p>Administrator</p>
+            <p>12/10/1926</p>
+            <p>Architect</p>
+          </div>
+          <span class="material-icons-round">
+            more_horiz
+          </span>
+        </div>
+      </div>
+      <div class="todo-item">
+        <div class="users-1">
+          <div class="users-2">
+            <span class="material-icons-round">
+              account_box
+            </span>
+          </div>
+          <div>
+            <p>Walter Gropius</p>
+            <p>Administrator</p>
+            <p>18/05/1883</p>
+            <p>Designer</p>
+          </div>
+          <span class="material-icons-round">
+            more_horiz
+          </span>
+        </div>
+      </div>
+      <div class="todo-item">
+        <div class="users-1">
+          <div class="users-2">
+            <span class="material-icons-round">
+              account_box
+            </span>
+          </div>
+          <div>
+            <p>Amancio Williams</p>
+            <p>Developer</p>
+            <p>19/02/1913</p>
+            <p>Architect</p>
+          </div>
+          <span class="material-icons-round">
+            more_horiz
+          </span>
+        </div>
+      </div>
+      <div class="todo-item">
+        <div class="users-1">
+          <div class="users-2">
+            <span class="material-icons-round">
+              account_box
+            </span>
+          </div>
+          <div>
+            <p>Frank Lloyd Wright</p>
+            <p>Project Manager</p>
+            <p>08/06/1867</p>
+            <p>Engineer</p>
+          </div>
+          <span class="material-icons-round">
+            more_horiz
+          </span>
+        </div>
+      </div>
+      
+      
+
+    </div>
+    <!-- Form Users -->
+    <dialog id="new-user-modal">
+      <form id="new-user-form">
+        <h2>New User</h2>
+        <div class="input-list">
+          <div class="form-field-container">
+            <label><span class="material-icons-round">person</span>Username</label>
+            <input name="name" type="text" placeholder="What's the name of user?">
+            <p style="color: gray; font-size: var(--font-sm); margin-top: 5px; font-style: italic;">TIP: Give it a short name</p>
+          </div>
+          <div class="form-field-container">
+            <label><span class="material-icons-round">person</span>Role</label>
+            <select name="userRole">
+              <option>Administrator</option>
+              <option>Project Manager</option>
+              <option>Developer</option>
+            </select>
+          </div>
+          <div class="form-field-container">
+            <label for="startDate">
+              <span class="material-icons-round">calendar_month</span>
+              Birth Date
+            </label>
+            <input name="startDate" type="date"></input>
+          </div>
+          <div class="form-field-container">
+            <label><span class="material-icons-round">not_listed_location</span>Profession</label>
+            <select name="status">
+              <option>Architect</option>
+              <option>Engineer</option>
+              <option>Designer</option>
+            </select>
+          </div>
+          <div style="display: flex; margin: 10px 0px 10px auto; column-gap: 10px;">
+            <button type="button" style="background-color: transparent;" value="cancel">Cancel</button>
+            <button type="button">Accept</button>
+        </div>
+      </form>
+    </dialog>
     <!-- Projects page -->
     <div class="page" id="projects-page">
       <!-- Form page -->
@@ -111,7 +241,6 @@
           </div>
         </form>
       </dialog>
-
       <!-- Gererate cards ui -->
       <div id="projects-list">
       </div>

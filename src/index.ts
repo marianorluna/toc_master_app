@@ -70,14 +70,16 @@ function toggleModal(id: string) {
 // }
 
 // Start page
-const startPage = document.getElementById("start-page")
-const startImg = document.getElementById("img-start")
-const startEnter = document.getElementById("start-enter")
-const sidebar = document.getElementById("sidebar")
-const main = document.getElementById("content")
-const header = document.getElementById("main-header") as HTMLElement
+const startPage    = document.getElementById("start-page")
+const startImg     = document.getElementById("img-start")
+const startEnter   = document.getElementById("start-enter")
+const sidebar      = document.getElementById("sidebar")
+const main         = document.getElementById("content")
+const usersPage    = document.getElementById("users-page")
+const header       = document.getElementById("main-header") as HTMLElement
 const dropdownMenu = document.getElementById("dropdown-menu")
-if (sidebar && main && startEnter && startPage && header && dropdownMenu) {
+const headerUsers  = document.getElementById("users-header")
+if (sidebar && main && startEnter && startPage && header && dropdownMenu && usersPage && headerUsers) {
     startEnter.addEventListener("click", () => {
         //resizeHandler()
         dropdownMenu.style.display = "flex"
@@ -88,11 +90,24 @@ if (sidebar && main && startEnter && startPage && header && dropdownMenu) {
         }
         
         document.body.style.display = "grid"
-        sidebar.style.display = "flex"
-        main.style.display = "grid"
-        startPage.style.display = "none"
+        sidebar.style.display       = "flex"
+        main.style.display          = "grid"
+        startPage.style.display     = "none"
+        usersPage.style.display     = "none"
+        headerUsers.style.display   = "none"
     })
 }
+
+// Form create new user
+const newUserBtn = document.getElementById("new-user-btn")
+    if (newUserBtn) {
+        newUserBtn.addEventListener("click", () =>
+            showModal("new-user-modal")
+        );
+    } else {
+        console.warn("New user button was not found");
+        console.log("New user btn value: ", newUserBtn);
+    }
 
 // Create project
 const newProjectBtn = document.getElementById("new-project-btn");
@@ -355,10 +370,11 @@ function toggleMenu (event) {
 // event
 menuHamb.addEventListener('click', toggleMenu, false);
 
-// Menu options 1, 2 and 3
+// Menu options 1, 2, 3, 4
 const menuOp1 = document.getElementById("menu-op1") as HTMLElement
 const menuOp2 = document.getElementById("menu-op2") as HTMLElement
 const menuOp3 = document.getElementById("menu-op3") as HTMLElement
+const menuOp4 = document.getElementById("menu-op4") as HTMLElement
 menuOp1.onclick = functionCreateProjects
 function functionCreateProjects(event: Event){
     menuHamb.click()
@@ -373,4 +389,9 @@ menuOp3.onclick = functionExportProjects
 function functionExportProjects(event: Event){
     menuHamb.click()
     projectsManager.exportToJSON()
+}
+menuOp4.onclick = functionCreateUser
+function functionCreateUser(event: Event){
+    menuHamb.click()
+    showModal("new-user-modal")
 }

@@ -92,6 +92,10 @@ button:hover {
     height: 100%;
 }
 
+#users-page {
+    display: none;
+}
+
 /* StartPage Styles */
 @keyframes rotate {from {transform: rotate(0deg);}
     to {transform: rotate(360deg);}}
@@ -184,6 +188,37 @@ button:hover {
     grid-area: header;
 }
 
+#users-header {
+    display: none;
+    grid-area: header-users;
+}
+
+.users-1 {
+    display: grid; 
+    grid-template-columns: 80px 1fr 20px; 
+    justify-content: space-between; 
+    align-items: center; 
+    padding: 5px 0;
+}
+
+.users-2 {
+    display: flex; 
+    column-gap: 15px; 
+    align-items: center; 
+    text-align: center;
+}
+
+.users-1 p {
+    padding: 0 20px;
+}
+
+.users-2 span {
+    height: 80px; 
+    width: 80px; 
+    align-content: center; 
+    text-align: center;
+}
+
 header {
     padding: 30px 40px;
     align-items: center;
@@ -234,7 +269,7 @@ header h2 {
     width: 100%;
 }
 
-#projects-list {
+#projects-list, #users-page {
     display: grid;
     padding: 20px 40px;
     gap: 30px;

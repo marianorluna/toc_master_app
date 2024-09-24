@@ -5,7 +5,7 @@ import { IProject, Project } from "./Project";
 import { IToDo, ToDo } from "./ToDo";
 import { TodoCreator } from '../bim-components/TodoCreator';
 import { SimpleQto } from '../bim-components/SimpleQto';
-import { Todo} from '../bim-components/Todo';
+import { Todo} from '../bim-components/TodoCreator/src/Todo';
 
 export class ProjectsManager {
     list: Project[] = [];
@@ -40,12 +40,14 @@ export class ProjectsManager {
         project.ui.addEventListener("click", () => {
             const projectsPage = document.getElementById("projects-page")
             const detailsPage = document.getElementById("project-details")
+            const usersPage      = document.getElementById("users-page")
             const header = document.getElementById("main-header")
             const dropdownMenu = document.getElementById("dropdown-menu")
             const viewerContainer = document.getElementById("viewer-container")
             const heightWindow = window.innerHeight
-            if (!projectsPage || !detailsPage || !header || !dropdownMenu || !viewerContainer) {return}
+            if (!projectsPage || !detailsPage || !header || !dropdownMenu || !viewerContainer || !usersPage) {return}
             //dropdownMenu.style.display = "flex"
+            usersPage.style.display  = "none"
             header.style.display = "none"
             projectsPage.style.display = "none"
             detailsPage.style.display = "flex"
@@ -63,7 +65,7 @@ export class ProjectsManager {
             this.createViewer()
             
             // Clean HTML ToDo's and add project's ToDo's
-            let todoList = document.getElementById("todo-list") as HTMLDivElement
+            let todoList       = document.getElementById("todo-list") as HTMLDivElement
             todoList.innerHTML = ""
             todoList.appendChild(project.toDoUI)
 
@@ -72,29 +74,51 @@ export class ProjectsManager {
         })
         // Agregar evento para mostrar página de proyectos
         const projectsButton = document.getElementById("projects-btn")
+        const projectsPage   = document.getElementById("projects-page")
+        const usersButton    = document.getElementById("users-btn")
+        const usersPage      = document.getElementById("users-page")
+        const headerUsers    = document.getElementById("users-header")
+        const detailsPage    = document.getElementById("project-details")
+        const header         = document.getElementById("main-header")
+        const dropdownMenu   = document.getElementById("dropdown-menu")
         if (projectsButton){
             projectsButton.addEventListener("click", () => {
-                const projectsPage = document.getElementById("projects-page")
-                const detailsPage = document.getElementById("project-details")
-                const header = document.getElementById("main-header")
-                const dropdownMenu = document.getElementById("dropdown-menu")
-                if (!projectsPage || !detailsPage || !header || !dropdownMenu) {return}
+                if (!projectsPage || !detailsPage || !header || !dropdownMenu || !usersPage || !headerUsers) {return}
                 //dropdownMenu.style.display = "none"
-                header.style.display = "flex"
+                headerUsers.style.display  = "none"
+                header.style.display       = "flex"
                 projectsPage.style.display = "flex"
-                detailsPage.style.display = "none"
+                detailsPage.style.display  = "none"
+                usersPage.style.display  = "none"
                 if (window.innerWidth < 768) {
                     document.body.style.gridTemplateAreas = '"header" "content"';
                 } else {
                     document.body.style.gridTemplateAreas = '"sidebar header" "sidebar content"';
                 }
             })
+        if (usersButton) {
+            usersButton.addEventListener("click", () => {
+                if (!projectsPage || !detailsPage || !header || !dropdownMenu || !usersPage || !headerUsers) {return}
+                header.style.display       = "none"
+                projectsPage.style.display = "none"
+                detailsPage.style.display  = "none"
+                usersPage.style.display    = "flex"
+                headerUsers.style.display  = "flex"
+                if (window.innerWidth < 768) {
+                    document.body.style.gridTemplateAreas = '"header-users" "content"';
+                } else {
+                    document.body.style.gridTemplateAreas = '"sidebar header-users" "sidebar content"';
+                }
+            })
         }
+        }
+        
         this.ui.append(project.ui);
         this.list.push(project);
 
         return project;
     }
+
 
     private setDetailsPage(project: Project) {
         // Project name
@@ -952,12 +976,15 @@ export class ProjectsManager {
         const todoCreator = new TodoCreator(viewer)
         await todoCreator.setup()
         todoCreator.onProjectCreated.add((todo) => {
-            console.log(todo)
+            // console.log(todo)
         })
 
         // Create instance of SimpleQto tool
         const simpleQto = new SimpleQto(viewer)
         await simpleQto.setup()
+
+        // Create instance of Todo
+        const todo = new Todo(viewer)
 
         // IFC Properties Finder
         const propsFinder = new OBC.IfcPropertiesFinder(viewer)
@@ -976,6 +1003,7 @@ export class ProjectsManager {
             propsFinder.uiElement.get('main'),
             fragmentManager.uiElement.get('main'),
             todoCreator.uiElement.get('activationButton'),
+            todo.uiElement.get('activationButton'),
             simpleQto.uiElement.get('activationButton')
         )
         viewer.ui.addToolbar(toolbar)
