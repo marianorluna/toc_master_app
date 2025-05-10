@@ -16,7 +16,7 @@ if (newProjectBtn) {
     );
 } else {
     console.warn("New projects button was not found");
-    // Podemos ver información por consola, para detectar errores
+    // Podemos ver información por consola, para detectar los errores
     console.log("New project btn value: ", newProjectBtn);
 }
 
